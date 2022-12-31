@@ -2,8 +2,6 @@
 
 #include <Python.h>
 
-#pragma comment(lib, "python37.lib")
-
 
 static PyObject* get_builtin_type_dict(PyObject* self, PyObject* args) {
     PyTypeObject* type;
