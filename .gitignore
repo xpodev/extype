@@ -1,0 +1,7 @@
+.lh/
+.pytest_cache/
+.venv/
+.vs/
+build/
+x64/
+*.vcxproj.user
