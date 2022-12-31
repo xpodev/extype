@@ -1,7 +1,6 @@
 #define PY_SSIZE_T_CLEAN
 
 #include <Python.h>
-#include <iostream>
 
 #pragma comment(lib, "python37.lib")
 
