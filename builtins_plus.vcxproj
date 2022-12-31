@@ -138,7 +138,6 @@
     <ClCompile Include="builtins_plus.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="builtins_plus.pyi" />
     <None Include="setup.py" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

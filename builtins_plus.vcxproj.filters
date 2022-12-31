@@ -21,6 +21,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="setup.py" />
-    <None Include="builtins_plus.pyi" />
   </ItemGroup>
 </Project>
