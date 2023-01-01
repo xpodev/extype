@@ -1,13 +1,13 @@
-import builtins_plus
+import extypes
 
 # `list` is actually the builtin type, but we import it so we get
 # proper typing. Note that the static type checker doesn't recognize
 # `[]` as an object of type list so it'll not add the extension methods.
-from builtins_plus import list
+from extypes import list
 
 
 def test_extend_builtins():
-    builtins_plus.extend_builtin_types()
+    extypes.extend_builtin_types()
 
     assert hasattr(list, "map")
 

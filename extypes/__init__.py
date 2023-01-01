@@ -1,13 +1,15 @@
 from functools import reduce
 from typing import Callable, List, TypeVar, overload
 import typing
-from builtins_plus.core import get_builtin_type_dict
+from .core import get_builtin_type_dict
 
 
 _T = TypeVar("_T")
 _U = TypeVar("_U")
 
 _DEFAULT = object()
+
+list = list
 
 
 def extend_type_with(typ, cls):
@@ -34,8 +36,7 @@ def extension(fn: _T) -> _T:
 
 
 def extend_list():
-    if typing.TYPE_CHECKING:
-        global list
+    global list
 
     class ListExtension(type([])):
         """
@@ -62,7 +63,7 @@ def extend_list():
     extend_type_with(list, ListExtension)
 
     if typing.TYPE_CHECKING:
-        list = ListExtension        
+        list = ListExtension
 
 
 def extend_builtin_types():
