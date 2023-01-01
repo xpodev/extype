@@ -1,15 +1,11 @@
-from distutils.core import setup, Extension
+from skbuild import setup
 
-builtins_plus_module = Extension('builtins_plus.core',
-                    sources = ['builtins_plus.cpp'])
-
-setup (name = 'BuiltinsPlus',
-       version = '1.0.0',
-       description = 'BuiltinsPlus is a module that allows you to extend builtins types.',
-       author="Xpo Development",
-       author_email="biny.xpo.dev",
-       packages=["builtins_plus"],
-       package_dir={
-              "builtins_plus": "src/builtins_plus"
-       },
-       ext_modules = [builtins_plus_module])
+setup(
+    name="extypes",
+    version="0.1.0",
+    description="BuiltinsPlus is a module that allows you to extend builtins types.",
+    author='Xpo Development',
+    author_email="biny.xpo.dev",
+    packages=['extypes'],
+    python_requires=">=3.7",
+)

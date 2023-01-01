@@ -20,7 +20,7 @@ static PyMethodDef BuiltinsPlusMethods[] = {
 
 static PyModuleDef BuiltinsPlusModule {
     PyModuleDef_HEAD_INIT,
-    "builtins_plus",   /* name of module */
+    "extypes",   /* name of module */
     "BuiltinsPlus allows you to extend the builtin types.", /* module documentation, may be NULL */
     -1,       /* size of per-interpreter state of the module,
                  or -1 if the module keeps state in global variables. */
