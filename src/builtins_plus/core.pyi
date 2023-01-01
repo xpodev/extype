@@ -1,0 +1,3 @@
+from typing import Type, Dict, Any
+
+def get_builtin_type_dict(typ: Type) -> Dict[str, Any]: ...
