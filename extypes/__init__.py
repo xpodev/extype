@@ -9,6 +9,7 @@ _U = TypeVar("_U")
 
 _DEFAULT = object()
 
+list = list
 
 
 def extend_type_with(typ, cls):
