@@ -20,7 +20,11 @@ skip-install = true
 [tool.hatch.envs.default.scripts]
 build = "python -m build"
 install_whl = "python -m pip install --force-reinstall --find-links ./dist --no-index extypes"
-test = "python -m pytest"
+pytest = "python -m pytest"
+test = [
+    "install_whl",
+    "pytest",
+]
 full-build = ["build", "install_whl", "test"]
 
 [tool.hatch.envs.build]

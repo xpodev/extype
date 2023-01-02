@@ -3,35 +3,33 @@ Extypes stands for extensible types, a Python package that enables extending typ
 
 
 ## Build & Installation
-To build the package, you'll need to install the `build` python package.
+We will use [Hatch](https://hatch.pypa.io/latest/) to build the package.
+First, install Hatch: https://hatch.pypa.io/latest/install/. We recommend using [pipx](https://hatch.pypa.io/latest/install/#pipx).
 
-Run
+After you've installed Hatch, you can build the package with the following command:
+```sh
+hatch run build
 ```
-pip install build
-```
+**Note:** This is not the normal `hatch build` command, because we need to build an extension module, which is not supported by Hatch yet.
 
-You can run this command in a virtual environment.
+This will build the package and create a wheel file in the `dist` folder.
 
-After you've installed the `build` package, run it through the command line:
-
-**Windows:**
-```
-py -m build
-```
-
-**Linux:**
-```
-python3 -m build
-```
-
-This command will install some tools which are required to build the package from source, and it'll then 
-build the package for you.
-
-
-After the process is complete, it'll result with a `.whl` file, AKA wheel file. 
 You can install this wheel file with `pip`:
-```
+```sh
 pip install {path_to_wheel_file}
+```
+
+### Contributing
+
+Run tests:
+```sh
+hatch run test
+```
+This will install the wheel file in a virtual environment and run the tests.
+
+Build & test for all python versions:
+```sh
+hatch run build:full-build
 ```
 
 ## Usage
