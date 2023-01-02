@@ -8,3 +8,27 @@ version = "0.1.0"
 authors = [{ name = "Xpo Development", email = "biny.xpo.dev" }]
 description = "BuiltinsPlus is a module that allows you to extend builtins types."
 requires-python = ">=3.7"
+
+[tool.scikit-build]
+wheel.packages = ["src/extypes"]
+
+[tool.hatch.envs.default]
+python = '3.7'
+dependencies = ["build", "pytest"]
+skip-install = true
+
+[tool.hatch.envs.default.scripts]
+build = "python -m build"
+install_whl = "python -m pip install --force-reinstall --find-links ./dist --no-index extypes"
+pytest = "python -m pytest"
+test = [
+    "install_whl",
+    "pytest",
+]
+full-build = ["build", "install_whl", "test"]
+
+[tool.hatch.envs.build]
+template = 'default'
+
+[[tool.hatch.envs.build.matrix]]
+python = ["3.7", "3.8", "3.9", "3.10", "3.11"]
