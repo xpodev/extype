@@ -43,7 +43,7 @@ extend_type_with(function, FunctionExtension)
 
 
 print(foo @ bar)
-print((foo @ bar)(1, 2))  # for some reason, this also print None.
+(foo @ bar)(1, 2)
 
 print(bar << ())
 print((bar << (3, 4))())
