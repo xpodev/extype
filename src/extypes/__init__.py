@@ -2,7 +2,6 @@ from enum import IntFlag
 from functools import reduce
 from typing import Callable, List, TypeVar, overload
 import typing
-from .core import get_builtin_type_dict
 from .core import *
 
 
