@@ -1,5 +1,7 @@
 #define PY_SSIZE_T_CLEAN
 
+#include <string>
+
 #include <Python.h>
 
 
