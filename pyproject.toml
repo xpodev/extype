@@ -3,12 +3,7 @@
 # build-backend = "scikit_build_core.build"
 
 [build-system]
-requires = [
-    "setuptools>=42",
-    "scikit-build",
-    "cmake>=3.15",
-    "ninja",
-]
+requires = ["setuptools>=42", "scikit-build", "cmake>=3.15", "ninja"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -26,17 +21,21 @@ wheel.packages = ["src/extypes"]
 
 [tool.hatch.envs.default]
 python = '3.7'
-dependencies = ["build", "pytest"]
+dependencies = [
+    "build",
+    "pytest",
+    "setuptools>=42",
+    "scikit-build",
+    "cmake>=3.15",
+    "ninja",
+]
 skip-install = true
 
 [tool.hatch.envs.default.scripts]
-build = "python -m build"
+build = "python -m build --no-isolation"
 install_whl = "python -m pip install --force-reinstall --find-links ./dist --no-index extypes"
 pytest = "python -m pytest"
-test = [
-    "install_whl",
-    "pytest",
-]
+test = ["install_whl", "pytest"]
 full-build = ["build", "install_whl", "test"]
 
 [tool.hatch.envs.build]
