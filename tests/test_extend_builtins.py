@@ -59,3 +59,35 @@ def test_extend_builtins_with_magic():
         return x + y
 
     assert (stringify @ add)(1, 2) == "3"
+
+
+def test_reverse_methods():
+    class TupleExtensions(tuple):
+        # since __add__ will override the default tuple.__add__ behavior, we need to save this
+        tuple__add__ = tuple.__add__
+
+        @extension
+        def __add__(self, other):
+            if isinstance(other, tuple):
+                return TupleExtensions.tuple__add__(self, other)
+            return NotImplemented
+
+    class FunctionExtension:  # can't inherit from 'function'
+        @extension
+        def __radd__(self, other):
+            assert isinstance(other, tuple)
+
+            def wrapper(*args, **kwargs):
+                return self(*other, *args, **kwargs)
+            return wrapper
+
+    def add(x, y):
+        return x + y
+
+    function = type(add)
+
+    extend_type_with(function, FunctionExtension)
+    extend_type_with(tuple, TupleExtensions)
+
+    # tbh this doesn't yet work.
+    # assert ((1, 2) + add) == 3
