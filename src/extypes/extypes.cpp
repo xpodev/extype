@@ -18,6 +18,33 @@ static int operator&(uint8_t const x, Protocols const y) {
 }
 
 
+struct MagicMethodLookupResult
+{
+private:
+    MagicMethodLookupResult(uint32_t error_code, void* ptr)
+        : error_code{error_code}
+        , result{ ptr } 
+    {}
+
+public:
+    uint32_t error_code;
+    void* result;
+
+    MagicMethodLookupResult(uint32_t ec)
+        : MagicMethodLookupResult{ec, NULL}
+        {}
+
+    MagicMethodLookupResult(void* result)
+        : MagicMethodLookupResult{0, result}
+        {}
+
+    bool is_error() { return error_code != 0; }
+};
+
+static constexpr uint32_t INVALID_MAGIC_METHOD = 0U;
+static constexpr uint32_t PROTOCOL_NOT_IMPLEMENTED = 1U;
+
+
 // Implementations
 
 #define UNARY_OP(name) \
@@ -101,21 +128,56 @@ BINARY_OP(__imatmul__)
 
 // End number protocol
 
+static Py_ssize_t impl__len__(PyObject* self) {
+    return PyNumber_AsSsize_t(PyObject_Call(PyObject_GetAttrString(self, "__len__"), PyTuple_Pack(0), NULL), NULL);
+}
 
-// Mapping protocol
+static int impl__contains__(PyObject* self, PyObject* value) {
+    return PyNumber_AsSsize_t(PyObject_Call(PyObject_GetAttrString(self, "__contains__"), PyTuple_Pack(1, value), NULL), NULL);
+}
 
-// End mapping protocol
+static PyObject* impl__getitem__(PyObject* self, PyObject* item) {
+    return PyObject_Call(PyObject_GetAttrString(self, "__getitem__"), PyTuple_Pack(0), NULL);
+}
 
-
-// Sequence protocol
-
-// End sequence protocol
-
+static int impl__setitem__(PyObject* self, PyObject* item, PyObject* value) {
+    return PyNumber_AsSsize_t(PyObject_Call(PyObject_GetAttrString(self, "__setitem__"), PyTuple_Pack(0), NULL), NULL);
+}
 
 // Special methods
 
+static PyObject* impl__repr__(PyObject* self) {
+    return PyObject_Call(PyObject_GetAttrString(self, "__repr__"), PyTuple_Pack(0), NULL);
+}
+
 static PyObject* impl__call__(PyObject* self, PyObject* args, PyObject* kwargs) {
     return PyObject_Call(PyObject_GetAttrString(self, "__call__"), args, kwargs);
+}
+
+// static Py_hash_t impl__hash__(PyObject* self) {
+    
+// }
+
+static PyObject* impl__str__(PyObject* self) {
+    return PyObject_Call(PyObject_GetAttrString(self, "__str__"), PyTuple_Pack(0), NULL);
+}
+
+// PyObject_GenericGetAttr
+// static PyObject* impl__getattr__(PyObject* self, PyObject* attr) {
+
+// }
+
+// PyObject_GenericSetAttr
+// static PyObject* impl__setattr__(PyObject* self, PyObject* attr, PyObject* value) {
+
+// }
+
+static PyObject* impl__iter__(PyObject* self) {
+    return PyObject_Call(PyObject_GetAttrString(self, "__iter__"), PyTuple_Pack(0), NULL);
+}
+
+static PyObject* impl__next__(PyObject* self) {
+    return PyObject_Call(PyObject_GetAttrString(self, "__next__"), PyTuple_Pack(0), NULL);
 }
 
 // End special methods
@@ -155,7 +217,7 @@ static PyObject* get_builtin_type_dict(PyObject* self, PyObject* args) {
 }
 
 
-static void* get_magic_method_slot(PyTypeObject* type, char const* name_str) {
+static MagicMethodLookupResult get_magic_method_slot(PyTypeObject* type, char const* name_str) {
     std::string name {name_str};
 
     // special methods
@@ -189,21 +251,21 @@ static void* get_magic_method_slot(PyTypeObject* type, char const* name_str) {
 
 #define CASE_NUMBER(method_name, field) \
     if (name == #method_name) { \
+        if (type->tp_as_number == NULL) return PROTOCOL_NOT_IMPLEMENTED; \
         return &(type->tp_as_number->field); \
     }
 
-// #define CASE_MAPPING(method_name, field) \
-// if (name == #method_name) { \
-//     return &type->tp_as_mapping.field; \
-// }
-// #define CASE_SEQUENCE(method_name, field) \
-// if (name == #method_name) { \
-//     return &type->tp_as_sequence.field; \
-// }
-
-    CASE_NUMBER(__add__, nb_add)
+    if (name == "__add__") {
+        if (type->tp_as_number == NULL && type-> tp_as_sequence == NULL) return PROTOCOL_NOT_IMPLEMENTED;
+        if (type->tp_as_number != NULL) return &(type->tp_as_number->nb_add);
+        return &type->tp_as_sequence->sq_concat;
+    }
     CASE_NUMBER(__sub__, nb_subtract)
-    CASE_NUMBER(__mul__, nb_multiply)
+    if (name == "__mul__") {
+        if (type->tp_as_number == NULL && type-> tp_as_sequence == NULL) return PROTOCOL_NOT_IMPLEMENTED;
+        if (type->tp_as_number != NULL) return &(type->tp_as_number->nb_multiply);
+        return &type->tp_as_sequence->sq_repeat;
+    }
     CASE_NUMBER(__mod__, nb_remainder)
     CASE_NUMBER(__divmod__, nb_divmod)
     CASE_NUMBER(__pow__, nb_power)
@@ -222,9 +284,17 @@ static void* get_magic_method_slot(PyTypeObject* type, char const* name_str) {
     CASE_NUMBER(__int__, nb_int)
     CASE_NUMBER(__float__, nb_float)
 
-    CASE_NUMBER(__iadd__, nb_inplace_add)
+    if (name == "__iadd__") {
+        if (type->tp_as_number == NULL && type-> tp_as_sequence == NULL) return PROTOCOL_NOT_IMPLEMENTED;
+        if (type->tp_as_number != NULL) return &(type->tp_as_number->nb_inplace_add);
+        return &type->tp_as_sequence->sq_inplace_repeat;
+    }
     CASE_NUMBER(__isub__, nb_inplace_subtract)
-    CASE_NUMBER(__imul__, nb_inplace_multiply)
+        if (name == "__imul__") {
+        if (type->tp_as_number == NULL && type-> tp_as_sequence == NULL) return PROTOCOL_NOT_IMPLEMENTED;
+        if (type->tp_as_number != NULL) return &(type->tp_as_number->nb_inplace_multiply);
+        return &type->tp_as_sequence->sq_inplace_repeat;
+    }
     CASE_NUMBER(__imod__, nb_inplace_remainder)
     CASE_NUMBER(__ipow__, nb_inplace_power)
     CASE_NUMBER(__ishl__, nb_inplace_lshift)
@@ -245,15 +315,72 @@ static void* get_magic_method_slot(PyTypeObject* type, char const* name_str) {
 
 #undef CASE_NUMBER
 
-    return NULL;
+    if (name == "__len__") {
+        if (type->tp_as_mapping == NULL && type->tp_as_sequence == NULL) return PROTOCOL_NOT_IMPLEMENTED;
+        if (type->tp_as_mapping != NULL) return &type->tp_as_mapping->mp_length;
+        return &type->tp_as_sequence->sq_length;
+    }
+
+    if (name == "__getitem__") {
+        if (type->tp_as_mapping == NULL && type->tp_as_sequence == NULL) return PROTOCOL_NOT_IMPLEMENTED;
+        if (type->tp_as_mapping != NULL) return &type->tp_as_mapping->mp_subscript;
+        return &type->tp_as_sequence->sq_item;
+    }
+
+    if (name == "__setitem__") {
+        if (type->tp_as_mapping == NULL && type->tp_as_sequence == NULL) return PROTOCOL_NOT_IMPLEMENTED;
+        if (type->tp_as_mapping != NULL) return &type->tp_as_mapping->mp_ass_subscript;
+        return &type->tp_as_sequence->sq_ass_item;
+    }
+
+    if (name == "__contains__") {
+        if (type->tp_as_sequence == NULL) return PROTOCOL_NOT_IMPLEMENTED;
+        return &type->tp_as_sequence->sq_contains;
+    }
+
+    return INVALID_MAGIC_METHOD;
 }
 
 
 static void* get_magic_method_implementation(char const* name_str) {
     std::string name {name_str};
 
+    if (name == "__repr__") {
+        return impl__repr__;
+    }
     if (name == "__call__") {
         return impl__call__;
+    }
+    // if (name == "__hash__") {
+    //     return impl__hash__;
+    // }
+    if (name == "__str__") {
+        return impl__str__;
+    }
+    if (name == "__getattr__") {
+        return PyObject_GenericGetAttr;
+    }
+    if (name == "__setattr__") {
+        return PyObject_GenericSetAttr;
+    }
+    if (name == "__iter__") {
+        return impl__iter__;
+    }
+    if (name == "__next__") {
+        return impl__next__;
+    }
+    
+    if (name == "__len__") {
+        return impl__len__;
+    }
+    if (name == "__contains__") {
+        return impl__contains__;
+    }
+    if (name == "__getitem__") {
+        return impl__getitem__;
+    }
+    if (name == "__setitem__") {
+        return impl__setitem__;
     }
 
 #define CASE_NUMBER(method_name) \
@@ -317,17 +444,24 @@ static PyObject* enable_magic_method(PyObject* self, PyObject* args) {
     }
 
     char const* method_name = PyUnicode_AsUTF8(method);
-    void** slot = (void**)get_magic_method_slot(type, method_name);
-
-    if (slot == NULL) {
-        PyErr_SetString(PyExc_ValueError, (std::string{"Invalid magic method name: "} + method_name).c_str());
-        return NULL;
+    auto result = get_magic_method_slot(type, method_name);
+    if (result.is_error()) {
+        if (result.error_code == INVALID_MAGIC_METHOD) {
+            PyErr_SetString(PyExc_ValueError, (std::string{"[ExTypes] Invalid magic method name: "} + method_name).c_str());
+            return NULL;
+        }
+        if (result.error_code == PROTOCOL_NOT_IMPLEMENTED) {
+            PyErr_SetString(PyExc_TypeError, (std::string{"[ExTypes] Could not find a slot for method: "} + method_name).c_str());
+            return NULL;
+        }
     }
+
+    void** slot = (void**)result.result;
 
     void* impl = get_magic_method_implementation(method_name);
 
     if (impl == NULL) {
-        PyErr_SetString(PyExc_NotImplementedError, (std::string{"Method '"} + method_name + "' is not implemented").c_str());
+        PyErr_SetString(PyExc_NotImplementedError, (std::string{"[ExTypes] Method '"} + method_name + "' is not implemented").c_str());
         return NULL;
     }
 
