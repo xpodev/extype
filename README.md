@@ -2,6 +2,18 @@
 Extypes stands for extensible types, a Python package that enables extending types.
 
 
+## Features
+* Exteranlly extend type via another type
+* Basic support for magic method extensions
+  - Number protocol
+  - Mapping protocol
+  - Sequence protocol
+
+### Todo
+* Add support for reverse methods (e.g. `__radd__`)
+* Make this features/todo list look nicer
+
+
 ## Build & Installation
 We will use [Hatch](https://hatch.pypa.io/latest/) to build the package.
 First, install Hatch: https://hatch.pypa.io/latest/install/. We recommend using [pipx](https://hatch.pypa.io/latest/install/#pipx).
@@ -91,5 +103,3 @@ Only methods marked with `@extension` will be added as extension methods.
 Extending a type will extend it in all modules, not just the one that called the `extend_type_with`, 
 so make sure you don't override an existing function, unless, of course, it is what you want.
 
-**Note:**
-This does not yet work for magic methods, and we'll might add that as a feature in the future.
