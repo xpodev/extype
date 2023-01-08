@@ -1,7 +1,16 @@
+from enum import IntFlag
 from functools import reduce
 from typing import Callable, List, TypeVar, overload
 import typing
-from .core import get_builtin_type_dict
+from .core import *
+
+
+class Protocol(IntFlag):
+    Nothing = 0
+    Number = 1 << 0
+    Sequence = 1 << 1
+    Mapping = 1 << 2
+
 
 
 _T = TypeVar("_T")
@@ -25,6 +34,11 @@ def extend_type_with(typ, cls):
     for name in vars(cls):
         item = getattr(cls, name)
         if callable(item) and getattr(item, "_extension_method", False):
+            if name.startswith("__") and name.endswith("__"):
+                try:
+                    enable_magic_method(typ, name)
+                except ValueError:
+                    ...
             type_dict[name] = item
 
 
