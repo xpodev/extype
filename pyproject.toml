@@ -13,7 +13,7 @@ authors = [
     { name = "Xpo Development", email = "biny@xpo.dev" },
     { name = "Elazar Cohen", email = "elazarcoh@gmail.com" },
 ]
-description = "BuiltinsPlus is a module that allows you to extend builtins types."
+description = "ExTypes is a Python package that allows you to externally extend types."
 requires-python = ">=3.7"
 
 [tool.scikit-build]
