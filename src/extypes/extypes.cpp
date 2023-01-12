@@ -152,7 +152,10 @@ static PyObject *impl__getitem__(PyObject *self, PyObject *item)
 
 static int impl__setitem__(PyObject *self, PyObject *item, PyObject *value)
 {
-    return PyNumber_AsSsize_t(PyObject_Call(PyObject_GetAttrString(self, "__setitem__"), PyTuple_Pack(0), NULL), NULL);
+    if (value == NULL) {
+        return PyNumber_AsSsize_t(PyObject_Call(PyObject_GetAttrString(self, "__delitem__"), PyTuple_Pack(1, item), NULL), NULL);
+    }
+    return PyNumber_AsSsize_t(PyObject_Call(PyObject_GetAttrString(self, "__setitem__"), PyTuple_Pack(2, item, value), NULL), NULL);
 }
 
 // Special methods
