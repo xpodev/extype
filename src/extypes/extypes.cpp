@@ -71,17 +71,33 @@ static constexpr uint32_t NOT_IMPLEMENTED = 2U;
 
 #define BINARY_OP(name) BINARY_OP_IMPL(__##name##__)
 
-#define _RBINARY_OP_IMPL(name, rname)                                                                     \
-    static PyObject *impl##name##(PyObject * left, PyObject * right)                                      \
-    {                                                                                                     \
-        if (!PyObject_HasAttrString(left, #name))                                                         \
-        {                                                                                                 \
-            if (!PyObject_HasAttrString(right, #rname))                                                   \
-                Py_RETURN_NOTIMPLEMENTED;                                                                 \
-            else                                                                                          \
-                return PyObject_Call(PyObject_GetAttrString(right, #rname), PyTuple_Pack(1, left), NULL); \
-        }                                                                                                 \
-        return PyObject_Call(PyObject_GetAttrString(left, #name), PyTuple_Pack(1, right), NULL);          \
+#define _RBINARY_OP_IMPL(name, rname)                                                                        \
+    static PyObject *impl##name##(PyObject * left, PyObject * right)                                         \
+    {                                                                                                        \
+        if (!PyObject_HasAttrString(left, #name))                                                            \
+        {                                                                                                    \
+            if (!PyObject_HasAttrString(right, #rname))                                                      \
+            {                                                                                                \
+                Py_RETURN_NOTIMPLEMENTED;                                                                    \
+            }                                                                                                \
+            else                                                                                             \
+            {                                                                                                \
+                return PyObject_Call(PyObject_GetAttrString(right, #rname), PyTuple_Pack(1, left), NULL);    \
+            }                                                                                                \
+        }                                                                                                    \
+        PyObject *result = PyObject_Call(PyObject_GetAttrString(left, #name), PyTuple_Pack(1, right), NULL); \
+        if (result == Py_NotImplemented)                                                                     \
+        {                                                                                                    \
+            if (!PyObject_HasAttrString(right, #rname))                                                      \
+            {                                                                                                \
+                Py_RETURN_NOTIMPLEMENTED;                                                                    \
+            }                                                                                                \
+            else                                                                                             \
+            {                                                                                                \
+                return PyObject_Call(PyObject_GetAttrString(right, #rname), PyTuple_Pack(1, left), NULL);    \
+            }                                                                                                \
+        }                                                                                                    \
+        return result;                                                                                       \
     }
 
 #define RBINARY_OP(name) _RBINARY_OP_IMPL(__##name##__, __r##name##__)
@@ -174,7 +190,8 @@ static PyObject *impl__getitem__(PyObject *self, PyObject *item)
 
 static int impl__setitem__(PyObject *self, PyObject *item, PyObject *value)
 {
-    if (value == NULL) {
+    if (value == NULL)
+    {
         return PyNumber_AsSsize_t(PyObject_Call(PyObject_GetAttrString(self, "__delitem__"), PyTuple_Pack(1, item), NULL), NULL);
     }
     return PyNumber_AsSsize_t(PyObject_Call(PyObject_GetAttrString(self, "__setitem__"), PyTuple_Pack(2, item, value), NULL), NULL);
@@ -192,7 +209,8 @@ static PyObject *impl__call__(PyObject *self, PyObject *args, PyObject *kwargs)
     return PyObject_Call(PyObject_GetAttrString(self, "__call__"), args, kwargs);
 }
 
-static Py_hash_t impl__hash__(PyObject* self) {
+static Py_hash_t impl__hash__(PyObject *self)
+{
     return PyNumber_AsSsize_t(PyObject_Call(PyObject_GetAttrString(self, "__hash__"), PyTuple_Pack(0), NULL), NULL);
 }
 
@@ -419,9 +437,9 @@ static MagicMethodLookupResult get_magic_method_implementation(char const *name_
 {
     std::string name{name_str};
 
-#define _IMPL(method_name) \
-    if (name == #method_name) \
-    {\
+#define _IMPL(method_name)        \
+    if (name == #method_name)     \
+    {                             \
         return impl##method_name; \
     }
 
