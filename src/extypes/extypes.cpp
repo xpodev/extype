@@ -170,6 +170,9 @@ static PyObject *impl__call__(PyObject *self, PyObject *args, PyObject *kwargs)
 // static Py_hash_t impl__hash__(PyObject* self) {
 
 // }
+static Py_hash_t impl__hash__(PyObject* self) {
+    return PyLong_AsSsize_t(PyObject_Call(PyObject_GetAttrString(self, "__hash__"), PyTuple_Pack(0), NULL));
+}
 
 static PyObject *impl__str__(PyObject *self)
 {
@@ -404,7 +407,7 @@ static MagicMethodLookupResult get_magic_method_implementation(char const *name_
     IMPL(__call__)
     if (name == "__hash__")
     {
-        return NOT_IMPLEMENTED;
+        return impl__hash__;
     }
     IMPL(__str__)
     if (name == "__getattr__")
