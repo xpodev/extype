@@ -171,7 +171,7 @@ static PyObject *impl__call__(PyObject *self, PyObject *args, PyObject *kwargs)
 
 // }
 static Py_hash_t impl__hash__(PyObject* self) {
-    return PyLong_AsSsize_t(PyObject_Call(PyObject_GetAttrString(self, "__hash__"), PyTuple_Pack(0), NULL));
+    return PyNumber_AsSsize_t(PyObject_Call(PyObject_GetAttrString(self, "__hash__"), PyTuple_Pack(0), NULL));
 }
 
 static PyObject *impl__str__(PyObject *self)
