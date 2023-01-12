@@ -29,6 +29,13 @@ You can install this wheel file with `pip`:
 pip install {path_to_wheel_file}
 ```
 
+---
+
+Alternatively, you can install through pip git
+```sh
+pip install git+https://github.com/xpodev/extypes/
+```
+
 ### Contributing
 
 Run tests:
