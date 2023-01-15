@@ -47,8 +47,8 @@ static constexpr uint32_t NOT_IMPLEMENTED = 2U;
 
 // Implementations
 
-#define UNARY_OP(name)                                                                    \
-    static PyObject *impl##name(PyObject *self)                                           \
+#define UNARY_OP_IMPL(name)                                                               \
+    static PyObject *impl##name##(PyObject * self)                                        \
     {                                                                                     \
         if (!PyObject_HasAttrString(self, #name))                                         \
         {                                                                                 \
@@ -57,7 +57,9 @@ static constexpr uint32_t NOT_IMPLEMENTED = 2U;
         return PyObject_Call(PyObject_GetAttrString(self, #name), PyTuple_Pack(0), NULL); \
     }
 
-#define BINARY_OP(name)                                                                          \
+#define UNARY_OP(name) UNARY_OP_IMPL(__##name##__)
+
+#define BINARY_OP_IMPL(name)                                                                     \
     static PyObject *impl##name(PyObject *left, PyObject *right)                                 \
     {                                                                                            \
         if (!PyObject_HasAttrString(left, #name))                                                \
@@ -67,7 +69,40 @@ static constexpr uint32_t NOT_IMPLEMENTED = 2U;
         return PyObject_Call(PyObject_GetAttrString(left, #name), PyTuple_Pack(1, right), NULL); \
     }
 
-#define TERNARY_OP(name)                                                                               \
+#define BINARY_OP(name) BINARY_OP_IMPL(__##name##__)
+
+#define _RBINARY_OP_IMPL(name, rname)                                                                        \
+    static PyObject *impl##name##(PyObject * left, PyObject * right)                                         \
+    {                                                                                                        \
+        if (!PyObject_HasAttrString(left, #name))                                                            \
+        {                                                                                                    \
+            if (!PyObject_HasAttrString(right, #rname))                                                      \
+            {                                                                                                \
+                Py_RETURN_NOTIMPLEMENTED;                                                                    \
+            }                                                                                                \
+            else                                                                                             \
+            {                                                                                                \
+                return PyObject_Call(PyObject_GetAttrString(right, #rname), PyTuple_Pack(1, left), NULL);    \
+            }                                                                                                \
+        }                                                                                                    \
+        PyObject *result = PyObject_Call(PyObject_GetAttrString(left, #name), PyTuple_Pack(1, right), NULL); \
+        if (result == Py_NotImplemented)                                                                     \
+        {                                                                                                    \
+            if (!PyObject_HasAttrString(right, #rname))                                                      \
+            {                                                                                                \
+                Py_RETURN_NOTIMPLEMENTED;                                                                    \
+            }                                                                                                \
+            else                                                                                             \
+            {                                                                                                \
+                return PyObject_Call(PyObject_GetAttrString(right, #rname), PyTuple_Pack(1, left), NULL);    \
+            }                                                                                                \
+        }                                                                                                    \
+        return result;                                                                                       \
+    }
+
+#define RBINARY_OP(name) _RBINARY_OP_IMPL(__##name##__, __r##name##__)
+
+#define TERNARY_OP_IMPL(name)                                                                          \
     static PyObject *impl##name(PyObject *self, PyObject *left, PyObject *right)                       \
     {                                                                                                  \
         if (!PyObject_HasAttrString(self, #name))                                                      \
@@ -77,17 +112,20 @@ static constexpr uint32_t NOT_IMPLEMENTED = 2U;
         return PyObject_Call(PyObject_GetAttrString(self, #name), PyTuple_Pack(2, left, right), NULL); \
     }
 
+#define TERNARY_OP(name) TERNARY_OP_IMPL(__##name##__)
+
 // Number protocol
 
-BINARY_OP(__add__)
-BINARY_OP(__sub__)
-BINARY_OP(__mul__)
-BINARY_OP(__mod__)
-BINARY_OP(__divmod__)
-TERNARY_OP(__pow__)
-UNARY_OP(__neg__)
-UNARY_OP(__pos__)
-UNARY_OP(__abs__)
+RBINARY_OP(add)
+RBINARY_OP(sub)
+RBINARY_OP(mul)
+RBINARY_OP(mod)
+RBINARY_OP(divmod)
+TERNARY_OP(pow)
+BINARY_OP(rpow)
+UNARY_OP(neg)
+UNARY_OP(pos)
+UNARY_OP(abs)
 
 static int impl__bool__(PyObject *self)
 {
@@ -103,35 +141,35 @@ static int impl__bool__(PyObject *self)
     return PyObject_IsTrue(PyObject_Call(PyObject_GetAttrString(self, "__bool__"), PyTuple_Pack(0), NULL));
 }
 
-UNARY_OP(__invert__)
-BINARY_OP(__shl__)
-BINARY_OP(__shr__)
-BINARY_OP(__and__)
-BINARY_OP(__xor__)
-BINARY_OP(__or__)
-UNARY_OP(__int__)
-UNARY_OP(__float__)
+UNARY_OP(invert)
+RBINARY_OP(lshift)
+RBINARY_OP(rshift)
+RBINARY_OP(and)
+RBINARY_OP(xor)
+RBINARY_OP(or)
+UNARY_OP(int)
+UNARY_OP(float)
 
-BINARY_OP(__iadd__)
-BINARY_OP(__isub__)
-BINARY_OP(__imul__)
-BINARY_OP(__imod__)
-TERNARY_OP(__ipow__)
-BINARY_OP(__ishl__)
-BINARY_OP(__ishr__)
-BINARY_OP(__iand__)
-BINARY_OP(__ixor__)
-BINARY_OP(__ior__)
+BINARY_OP(iadd)
+BINARY_OP(isub)
+BINARY_OP(imul)
+BINARY_OP(imod)
+TERNARY_OP(ipow)
+BINARY_OP(ilshift)
+BINARY_OP(irshift)
+BINARY_OP(iand)
+BINARY_OP(ixor)
+BINARY_OP(ior)
 
-BINARY_OP(__floordiv__)
-BINARY_OP(__truediv__)
-BINARY_OP(__ifloordiv__)
-BINARY_OP(__itruediv__)
+RBINARY_OP(floordiv)
+RBINARY_OP(truediv)
+BINARY_OP(ifloordiv)
+BINARY_OP(itruediv)
 
-BINARY_OP(__index__)
+BINARY_OP(index)
 
-BINARY_OP(__matmul__)
-BINARY_OP(__imatmul__)
+RBINARY_OP(matmul)
+BINARY_OP(imatmul)
 
 // End number protocol
 
@@ -152,7 +190,11 @@ static PyObject *impl__getitem__(PyObject *self, PyObject *item)
 
 static int impl__setitem__(PyObject *self, PyObject *item, PyObject *value)
 {
-    return PyNumber_AsSsize_t(PyObject_Call(PyObject_GetAttrString(self, "__setitem__"), PyTuple_Pack(0), NULL), NULL);
+    if (value == NULL)
+    {
+        return PyNumber_AsSsize_t(PyObject_Call(PyObject_GetAttrString(self, "__delitem__"), PyTuple_Pack(1, item), NULL), NULL);
+    }
+    return PyNumber_AsSsize_t(PyObject_Call(PyObject_GetAttrString(self, "__setitem__"), PyTuple_Pack(2, item, value), NULL), NULL);
 }
 
 // Special methods
@@ -167,9 +209,10 @@ static PyObject *impl__call__(PyObject *self, PyObject *args, PyObject *kwargs)
     return PyObject_Call(PyObject_GetAttrString(self, "__call__"), args, kwargs);
 }
 
-// static Py_hash_t impl__hash__(PyObject* self) {
-
-// }
+static Py_hash_t impl__hash__(PyObject *self)
+{
+    return PyNumber_AsSsize_t(PyObject_Call(PyObject_GetAttrString(self, "__hash__"), PyTuple_Pack(0), NULL), NULL);
+}
 
 static PyObject *impl__str__(PyObject *self)
 {
@@ -394,19 +437,18 @@ static MagicMethodLookupResult get_magic_method_implementation(char const *name_
 {
     std::string name{name_str};
 
-#define IMPL(method_name)         \
+#define _IMPL(method_name)        \
     if (name == #method_name)     \
     {                             \
         return impl##method_name; \
     }
 
-    IMPL(__repr__)
-    IMPL(__call__)
-    if (name == "__hash__")
-    {
-        return NOT_IMPLEMENTED;
-    }
-    IMPL(__str__)
+#define IMPL(method_name) _IMPL(__##method_name##__)
+
+    IMPL(repr)
+    IMPL(call)
+    IMPL(hash)
+    IMPL(str)
     if (name == "__getattr__")
     {
         return PyObject_GenericGetAttr;
@@ -415,57 +457,58 @@ static MagicMethodLookupResult get_magic_method_implementation(char const *name_
     {
         return PyObject_GenericSetAttr;
     }
-    IMPL(__iter__)
-    IMPL(__next__)
+    IMPL(iter)
+    IMPL(next)
 
-    IMPL(__len__)
-    IMPL(__contains__)
-    IMPL(__getitem__)
-    IMPL(__setitem__)
+    IMPL(len)
+    IMPL(contains)
+    IMPL(getitem)
+    IMPL(setitem)
 
-    IMPL(__add__)
-    IMPL(__sub__)
-    IMPL(__mul__)
-    IMPL(__mod__)
-    IMPL(__divmod__)
-    IMPL(__pow__)
-    IMPL(__neg__)
-    IMPL(__pos__)
-    IMPL(__abs__)
+    IMPL(add)
+    IMPL(sub)
+    IMPL(mul)
+    IMPL(mod)
+    IMPL(divmod)
+    IMPL(pow)
+    IMPL(neg)
+    IMPL(pos)
+    IMPL(abs)
 
-    IMPL(__bool__)
+    IMPL(bool)
 
-    IMPL(__invert__)
-    IMPL(__shl__)
-    IMPL(__shr__)
-    IMPL(__and__)
-    IMPL(__xor__)
-    IMPL(__or__)
-    IMPL(__int__)
-    IMPL(__float__)
+    IMPL(invert)
+    IMPL(lshift)
+    IMPL(rshift)
+    IMPL(and)
+    IMPL(xor)
+    IMPL(or)
+    IMPL(int)
+    IMPL(float)
 
-    IMPL(__iadd__)
-    IMPL(__isub__)
-    IMPL(__imul__)
-    IMPL(__imod__)
-    IMPL(__ipow__)
-    IMPL(__ishl__)
-    IMPL(__ishr__)
-    IMPL(__iand__)
-    IMPL(__ixor__)
-    IMPL(__ior__)
+    IMPL(iadd)
+    IMPL(isub)
+    IMPL(imul)
+    IMPL(imod)
+    IMPL(ipow)
+    IMPL(ilshift)
+    IMPL(irshift)
+    IMPL(iand)
+    IMPL(ixor)
+    IMPL(ior)
 
-    IMPL(__floordiv__)
-    IMPL(__truediv__)
-    IMPL(__ifloordiv__)
-    IMPL(__itruediv__)
+    IMPL(floordiv)
+    IMPL(truediv)
+    IMPL(ifloordiv)
+    IMPL(itruediv)
 
-    IMPL(__index__)
+    IMPL(index)
 
-    IMPL(__matmul__)
-    IMPL(__imatmul__)
+    IMPL(matmul)
+    IMPL(imatmul)
 
 #undef IMPL
+#undef _IMPL
 
     return INVALID_MAGIC_METHOD;
 }

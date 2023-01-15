@@ -8,8 +8,9 @@ Extypes stands for extensible types, a Python package that enables extending typ
   - [x] Number protocol
   - [x] Mapping protocol
   - [x] Sequence protocol
-- [ ] Add support for reverse methods (e.g. `__radd__`)
+- [x] Add support for reverse methods (e.g. `__radd__`)
 - [x] Make this features/todo list look nicer
+- [ ] Add support for the rich comparison function
 
 
 ## Build & Installation

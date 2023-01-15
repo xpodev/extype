@@ -1,3 +1,4 @@
+from functools import partial
 import typing_extensions
 import extypes
 
@@ -39,9 +40,6 @@ def test_extend_builtins_with_magic():
             def _(*args, **kwargs):
                 return self(other(*args, **kwargs))
             return _
-
-        @extension
-        def __shl__(self, other):
             assert isinstance(other, (tuple, dict))
 
             def wrapper(*args, **kwargs):
@@ -63,31 +61,33 @@ def test_extend_builtins_with_magic():
 
 def test_reverse_methods():
     class TupleExtensions(tuple):
-        # since __add__ will override the default tuple.__add__ behavior, we need to save this
-        tuple__add__ = tuple.__add__
-
         @extension
-        def __add__(self, other):
-            if isinstance(other, tuple):
-                return TupleExtensions.tuple__add__(self, other)
+        def __rmatmul__(self, other):
+            if callable(other):
+                return partial(other, *self)
             return NotImplemented
 
-    class FunctionExtension:  # can't inherit from 'function'
+    class FunctionExtensions:
         @extension
-        def __radd__(self, other):
-            assert isinstance(other, tuple)
-
-            def wrapper(*args, **kwargs):
-                return self(*other, *args, **kwargs)
-            return wrapper
+        def __matmul__(self, other):
+            # NOTE! this will override previous operator @ implementation
+            if callable(other):
+                def wrapper(*args, **kwargs):
+                    return self(other(*args, **kwargs))
+                return wrapper
+            return NotImplemented
 
     def add(x, y):
         return x + y
 
-    function = type(add)
+    def stringify(x):
+        return str(x)
 
-    extend_type_with(function, FunctionExtension)
+    function = type(add)
+    extend_type_with(function, FunctionExtensions)
     extend_type_with(tuple, TupleExtensions)
 
-    # tbh this doesn't yet work.
-    # assert ((1, 2) + add) == 3
+    assert (stringify @ (102,))() == "102"
+    assert (stringify @ ([1, 2, 3].map(stringify).reduce(add),))() == "123"
+
+    assert (stringify @ add @ (4,))(5) == "9"
