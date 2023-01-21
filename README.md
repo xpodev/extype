@@ -36,6 +36,10 @@ Alternatively, you can install through pip git
 ```sh
 pip install git+https://github.com/xpodev/extypes/
 ```
+or through pypi
+```sh
+pip install extype
+```
 
 ### Contributing
 
