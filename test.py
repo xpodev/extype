@@ -1,5 +1,3 @@
-from functools import wraps
-from pprint import pprint
 from extypes.core import *
 from extypes import extension, extend_type_with, Protocol
 
@@ -31,6 +29,13 @@ class FunctionExtension:
         return wrapper
 
 
+class IntExtension(int):
+    @extension
+    @property
+    def as_bytes(self):
+        return self.to_bytes(4, "little")
+
+
 def foo(*args, **kwargs):
     print(*args, **kwargs)
 
@@ -40,6 +45,7 @@ def bar(x, y):
 
 
 extend_type_with(function, FunctionExtension)
+extend_type_with(int, IntExtension)
 
 
 print(foo @ bar)
@@ -51,3 +57,5 @@ print((bar << (3, 4))())
 
 print_hello = foo << ("Hello",)  # I would've used print directly, but we can't yet extend builtin functions
 print_hello("World!")
+
+print((2).as_bytes)
