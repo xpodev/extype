@@ -21,7 +21,7 @@ class FunctionExtension:
         return _
 
     @extension
-    def __shl__(self, other):
+    def __lshift__(self, other):
         assert isinstance(other, (tuple, dict))
 
         def wrapper(*args, **kwargs):
