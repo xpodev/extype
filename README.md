@@ -1,6 +1,9 @@
 # ExTypes
 Extypes stands for extensible types, a Python package that enables extending types.
 
+![Tests](https://github.com/xpodev/extypes/actions/workflows/python-test.yml/badge.svg)
+[![PyPI version](https://badge.fury.io/py/extype.svg)](https://badge.fury.io/py/extype)
+
 
 ## Features
 - [x] Exteranlly extend type via another type
