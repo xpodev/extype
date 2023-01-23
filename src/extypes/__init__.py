@@ -1,6 +1,6 @@
 from enum import IntFlag
 from functools import reduce
-from typing import Callable, List, TypeVar, overload
+from typing import Callable, Generic, List, TypeVar, overload
 import typing
 from .core import *
 
@@ -33,20 +33,31 @@ def extend_type_with(typ, cls):
 
     for name in vars(cls):
         item = getattr(cls, name)
-        if callable(item) and getattr(item, "_extension_method", False):
-            if name.startswith("__") and name.endswith("__"):
-                try:
-                    enable_magic_method(typ, name)
-                except ValueError:
-                    ...
+        if isinstance(item, ExtensionObject):
+            item = item.original
+            if callable(getattr(item, "__set_name__", None)):
+                item.__set_name__(typ, name)
+            if callable(item):
+                if name.startswith("__") and name.endswith("__"):
+                    try:
+                        enable_magic_method(typ, name)
+                    except ValueError:
+                        ...
             type_dict[name] = item
 
 
-def extension(fn: _T) -> _T:
-    if not callable(fn):
-        raise TypeError
-    fn._extension_method = True
-    return fn
+class ExtensionObject(Generic[_T]):
+    original: _T
+
+    def __init__(self, original: _T):
+        self.original = original
+
+
+def extension(o: _T) -> _T:
+    if callable(o) or hasattr(o, "__get__") or hasattr(o, "__set__") or hasattr(o, "__delete__"):
+        return ExtensionObject(o)
+    else:
+        raise TypeError("Only functions and descriptors may be marked as extensions")
 
 
 def extend_list():

@@ -12,4 +12,4 @@ def test_length_function():
 
     extend_type_with(Extensible, Length)
 
-    assert len(Length()) == 5
+    assert len(Extensible()) == 5

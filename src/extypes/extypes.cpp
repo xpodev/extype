@@ -350,7 +350,7 @@ static MagicMethodLookupResult get_magic_method_slot(PyTypeObject *type, char co
 
     // protocol methods
 
-#define CASE_NUMBER(method_name, field)      \
+#define SLOT(method_name, field)      \
     if (name == #method_name)                \
     {                                        \
         if (type->tp_as_number == NULL)      \
@@ -366,7 +366,7 @@ static MagicMethodLookupResult get_magic_method_slot(PyTypeObject *type, char co
             return &(type->tp_as_number->nb_add);
         return &(type->tp_as_sequence->sq_concat);
     }
-    CASE_NUMBER(__sub__, nb_subtract)
+    SLOT(__sub__, nb_subtract)
     if (name == "__mul__")
     {
         if (type->tp_as_number == NULL && type->tp_as_sequence == NULL)
@@ -375,23 +375,23 @@ static MagicMethodLookupResult get_magic_method_slot(PyTypeObject *type, char co
             return &(type->tp_as_number->nb_multiply);
         return &type->tp_as_sequence->sq_repeat;
     }
-    CASE_NUMBER(__mod__, nb_remainder)
-    CASE_NUMBER(__divmod__, nb_divmod)
-    CASE_NUMBER(__pow__, nb_power)
-    CASE_NUMBER(__neg__, nb_negative)
-    CASE_NUMBER(__pos__, nb_positive)
-    CASE_NUMBER(__abs__, nb_absolute)
+    SLOT(__mod__, nb_remainder)
+    SLOT(__divmod__, nb_divmod)
+    SLOT(__pow__, nb_power)
+    SLOT(__neg__, nb_negative)
+    SLOT(__pos__, nb_positive)
+    SLOT(__abs__, nb_absolute)
 
-    CASE_NUMBER(__bool__, nb_bool)
+    SLOT(__bool__, nb_bool)
 
-    CASE_NUMBER(__invert__, nb_invert)
-    CASE_NUMBER(__shl__, nb_lshift)
-    CASE_NUMBER(__shr__, nb_rshift)
-    CASE_NUMBER(__and__, nb_and)
-    CASE_NUMBER(__xor__, nb_xor)
-    CASE_NUMBER(__or__, nb_or)
-    CASE_NUMBER(__int__, nb_int)
-    CASE_NUMBER(__float__, nb_float)
+    SLOT(__invert__, nb_invert)
+    SLOT(__lshift__, nb_lshift)
+    SLOT(__rshift__, nb_rshift)
+    SLOT(__and__, nb_and)
+    SLOT(__xor__, nb_xor)
+    SLOT(__or__, nb_or)
+    SLOT(__int__, nb_int)
+    SLOT(__float__, nb_float)
 
     if (name == "__iadd__")
     {
@@ -401,7 +401,7 @@ static MagicMethodLookupResult get_magic_method_slot(PyTypeObject *type, char co
             return &(type->tp_as_number->nb_inplace_add);
         return &type->tp_as_sequence->sq_inplace_repeat;
     }
-    CASE_NUMBER(__isub__, nb_inplace_subtract)
+    SLOT(__isub__, nb_inplace_subtract)
     if (name == "__imul__")
     {
         if (type->tp_as_number == NULL && type->tp_as_sequence == NULL)
@@ -410,25 +410,25 @@ static MagicMethodLookupResult get_magic_method_slot(PyTypeObject *type, char co
             return &(type->tp_as_number->nb_inplace_multiply);
         return &type->tp_as_sequence->sq_inplace_repeat;
     }
-    CASE_NUMBER(__imod__, nb_inplace_remainder)
-    CASE_NUMBER(__ipow__, nb_inplace_power)
-    CASE_NUMBER(__ishl__, nb_inplace_lshift)
-    CASE_NUMBER(__ishr__, nb_inplace_rshift)
-    CASE_NUMBER(__iand__, nb_inplace_and)
-    CASE_NUMBER(__ixor__, nb_inplace_xor)
-    CASE_NUMBER(__ior__, nb_inplace_or)
+    SLOT(__imod__, nb_inplace_remainder)
+    SLOT(__ipow__, nb_inplace_power)
+    SLOT(__ilshift__, nb_inplace_lshift)
+    SLOT(__irshift__, nb_inplace_rshift)
+    SLOT(__iand__, nb_inplace_and)
+    SLOT(__ixor__, nb_inplace_xor)
+    SLOT(__ior__, nb_inplace_or)
 
-    CASE_NUMBER(__floordiv__, nb_floor_divide)
-    CASE_NUMBER(__truediv__, nb_true_divide)
-    CASE_NUMBER(__ifloordiv__, nb_inplace_floor_divide)
-    CASE_NUMBER(__itruediv__, nb_inplace_true_divide)
+    SLOT(__floordiv__, nb_floor_divide)
+    SLOT(__truediv__, nb_true_divide)
+    SLOT(__ifloordiv__, nb_inplace_floor_divide)
+    SLOT(__itruediv__, nb_inplace_true_divide)
 
-    CASE_NUMBER(__index__, nb_index)
+    SLOT(__index__, nb_index)
 
-    CASE_NUMBER(__matmul__, nb_matrix_multiply)
-    CASE_NUMBER(__imatmul__, nb_inplace_matrix_multiply)
+    SLOT(__matmul__, nb_matrix_multiply)
+    SLOT(__imatmul__, nb_inplace_matrix_multiply)
 
-#undef CASE_NUMBER
+#undef SLOT
 
     return INVALID_MAGIC_METHOD;
 }
