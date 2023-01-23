@@ -55,7 +55,6 @@ class ExtensionObject(Generic[_T]):
 
 def extension(o: _T) -> _T:
     if callable(o) or hasattr(o, "__get__") or hasattr(o, "__set__") or hasattr(o, "__delete__"):
-        print("marked as extension:", o)
         return ExtensionObject(o)
     else:
         raise TypeError("Only functions and descriptors may be marked as extensions")
