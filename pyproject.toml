@@ -1,20 +1,19 @@
-# [build-system]
-# requires = ["scikit-build-core[rich,pyproject]"]
-# build-backend = "scikit_build_core.build"
-
 [build-system]
-requires = ["setuptools>=42", "scikit-build", "cmake>=3.15", "ninja"]
-build-backend = "setuptools.build_meta"
+requires = [
+    # mesonpy, version 0.13.0 which isn't released yet
+    "meson-python @ git+https://github.com/mesonbuild/meson-python.git@61bb2b3315f4e312558778022ca6e87ffaed2700",
+]
+build-backend = "mesonpy"
 
 [project]
 name = "extypes"
-version = "0.1.0"
 authors = [
     { name = "Xpo Development", email = "biny@xpo.dev" },
     { name = "Elazar Cohen", email = "elazarcoh@gmail.com" },
 ]
 description = "ExTypes is a Python package that allows you to externally extend types."
 requires-python = ">=3.7"
+dynamic = ["version"]
 
 [tool.scikit-build]
 wheel.packages = ["src/extypes"]
