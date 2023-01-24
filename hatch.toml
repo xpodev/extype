@@ -25,7 +25,7 @@ build = [
 ]
 install_whl = "python -m pip install --force-reinstall --find-links ./dist --no-index extypes"
 run_pytest = "pytest"
-run = [
+test = [
     "build",
     "install_whl",
     "run_pytest"

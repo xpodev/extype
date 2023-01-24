@@ -120,11 +120,11 @@ This will build the wheel for all python versions, and put it in the `dist` fold
 
 To run tests for all python versions, run:
 ```sh
-hatch run dist:run
+hatch run dist:test
 ```
 To run tests for a specific python version, run:
 ```sh
-hatch run +py=39 dist:run 
+hatch run +py=39 dist:test
 ```
 
 Both commands will build, install the package into an isolated environment,
