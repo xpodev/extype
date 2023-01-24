@@ -163,3 +163,5 @@ cython_debug/
 
 _skbuild/
 .mesonpy-native-file.ini
+.mesonpy
+.mesonpy-*
