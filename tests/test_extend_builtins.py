@@ -17,6 +17,7 @@ def test_extend_builtins():
 
     assert [1, 2, 3].reduce(int.__add__) == 6
 
+
 def test_extend_builtins_with_magic():
 
     def _():
