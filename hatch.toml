@@ -16,6 +16,7 @@ install = "python -m pip install --verbose ."
 extra-dependencies = [
     "build",
     "pytest",
+    "typing_extensions",
 ]
 
 [envs.test.scripts]
