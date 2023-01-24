@@ -23,7 +23,7 @@ extra-dependencies = [
 build = [
     "python -m build --no-isolation --wheel --sdist --outdir ./dist",
 ]
-install_whl = "python -m pip install --force-reinstall --find-links ./dist --no-index extypes"
+install_whl = "python -m pip install --force-reinstall --find-links ./dist --no-index extype"
 run_pytest = "pytest"
 test = [
     "build",

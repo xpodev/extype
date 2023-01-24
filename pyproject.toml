@@ -6,11 +6,11 @@ requires = [
 build-backend = 'mesonpy'
 
 [project]
-name = "extypes"
+name = "extype"
 authors = [
     { name = "Xpo Development", email = "biny@xpo.dev" },
     { name = "Elazar Cohen", email = "elazarcoh@gmail.com" },
 ]
-description = "ExTypes is a Python package that allows you to externally extend types."
+description = "ExType is a Python package that allows you to externally extend types."
 requires-python = ">=3.7"
 dynamic = ["version"]

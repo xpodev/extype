@@ -1,4 +1,4 @@
-from extypes import extension, extend_type_with
+from extype import extension, extend_type_with
 
 
 def test_extends_descriptors():
