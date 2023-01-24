@@ -1,4 +1,4 @@
-from extypes import extension, extend_type_with
+from extype import *
 
 
 def test_length_function():

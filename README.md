@@ -1,5 +1,5 @@
-# ExTypes
-Extypes stands for extensible types, a Python package that enables extending types.
+# ExType
+Extype stands for extensible types, a Python package that enables extending types.
 
 ## Installation
 
@@ -10,19 +10,19 @@ pip install extype
 Alternatively, you can install through git (make sure to have pip 22.0 or higher):
 ```sh
 python -m pip install --upgrade pip
-pip install git+https://github.com/xpodev/extypes/
+pip install git+https://github.com/xpodev/extype/
 ```
 
 ## Usage
 First, in your Python code, import the package:
 ```py
-import extypes
+import extype
 ```
 
 Then, you can use the built-in extensions for the builtin types. In order to apply these extensions, 
 call the `extend_builtin_types` function:
 ```py
-extypes.extend_builtin_types()
+extype.extend_builtin_types()
 ```
 
 The built-in extensions include a map function for the `list` type:
@@ -41,7 +41,7 @@ print(x.hex())  # 0xfa
 
 First, we'll need some tools:
 ```py
-from extypes import extension, extend_type_with
+from extype import extension, extend_type_with
 ```
 
 Next, we'll define our class which will hold the extension method. Note that this class will not get instantiated.

@@ -10,11 +10,11 @@ python_sources = [
 
 python.install_sources(
   python_sources,
-  subdir: 'extypes'
+  subdir: 'extype'
 )
 
 python.extension_module('core',
-    'extypes.cpp',
+    'extype.cpp',
     install: true,
-    subdir: 'extypes',
+    subdir: 'extype',
 )
