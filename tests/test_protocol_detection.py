@@ -1,4 +1,4 @@
-from extypes import *
+from extype import *
 
 
 def test_length_function():

@@ -1,5 +1,5 @@
-from extypes.core import *
-from extypes import extension, extend_type_with, Protocol
+from extype.core import *
+from extype import extension, extend_type_with, Protocol
 
 
 def _():
