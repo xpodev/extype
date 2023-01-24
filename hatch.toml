@@ -16,6 +16,7 @@ install = "python -m pip install --verbose ."
 extra-dependencies = [
     "build",
     "pytest",
+    "flake8",
     "typing_extensions",
 ]
 
@@ -24,10 +25,12 @@ build = [
     "python -m build --no-isolation --wheel --sdist --outdir ./dist",
 ]
 install_whl = "python -m pip install --force-reinstall --find-links ./dist --no-index extypes"
+run_flake8 = "flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics"
 run_pytest = "pytest"
 test = [
     "build",
     "install_whl",
+    "run_flake8",
     "run_pytest"
 ]
 
