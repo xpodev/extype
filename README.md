@@ -1,72 +1,31 @@
-# ExTypes
-Extypes stands for extensible types, a Python package that enables extending types.
+# ExType
+Extype stands for extensible types, a Python package that enables extending types.
 
 ![Tests](https://github.com/xpodev/extypes/actions/workflows/python-test.yml/badge.svg)
 [![PyPI version](https://badge.fury.io/py/extype.svg)](https://badge.fury.io/py/extype)
 
+## Installation
 
-## Features
-- [x] Exteranlly extend type via another type
-- [x] Basic support for magic method extensions
-  - [x] Number protocol
-  - [x] Mapping protocol
-  - [x] Sequence protocol
-- [x] Add support for reverse methods (e.g. `__radd__`)
-- [x] Make this features/todo list look nicer
-- [ ] Add support for the rich comparison function
-
-
-## Build & Installation
-We will use [Hatch](https://hatch.pypa.io/latest/) to build the package.
-First, install Hatch: https://hatch.pypa.io/latest/install/. We recommend using [pipx](https://hatch.pypa.io/latest/install/#pipx).
-
-After you've installed Hatch, you can build the package with the following command:
-```sh
-hatch run build
-```
-**Note:** This is not the normal `hatch build` command, because we need to build an extension module, which is not supported by Hatch yet.
-
-This will build the package and create a wheel file in the `dist` folder.
-
-You can install this wheel file with `pip`:
-```sh
-pip install {path_to_wheel_file}
-```
-
----
-
-Alternatively, you can install through pip git
-```sh
-pip install git+https://github.com/xpodev/extypes/
-```
-or through pypi
 ```sh
 pip install extype
 ```
 
-### Contributing
-
-Run tests:
+Alternatively, you can install through git (make sure to have pip 22.0 or higher):
 ```sh
-hatch run test
-```
-This will install the wheel file in a virtual environment and run the tests.
-
-Build & test for all python versions:
-```sh
-hatch run build:full-build
+python -m pip install --upgrade pip
+pip install git+https://github.com/xpodev/extype/
 ```
 
 ## Usage
 First, in your Python code, import the package:
 ```py
-import extypes
+import extype
 ```
 
 Then, you can use the built-in extensions for the builtin types. In order to apply these extensions, 
 call the `extend_builtin_types` function:
 ```py
-extypes.extend_builtin_types()
+extype.extend_builtin_types()
 ```
 
 The built-in extensions include a map function for the `list` type:
@@ -85,7 +44,7 @@ print(x.hex())  # 0xfa
 
 First, we'll need some tools:
 ```py
-from extypes import extension, extend_type_with
+from extype import extension, extend_type_with
 ```
 
 Next, we'll define our class which will hold the extension method. Note that this class will not get instantiated.
@@ -116,3 +75,60 @@ Only methods marked with `@extension` will be added as extension methods.
 Extending a type will extend it in all modules, not just the one that called the `extend_type_with`, 
 so make sure you don't override an existing function, unless, of course, it is what you want.
 
+
+## Features
+- [x] Exteranlly extend type via another type
+- [x] Basic support for magic method extensions
+  - [x] Number protocol
+  - [x] Mapping protocol
+  - [x] Sequence protocol
+- [x] Add support for reverse methods (e.g. `__radd__`)
+- [x] Make this features/todo list look nicer
+- [ ] Add support for the rich comparison function
+
+
+## Maintainers
+
+### Build & Installation
+
+We use [Hatch](https://hatch.pypa.io/latest/) to manage the build environment,
+ and [mesonpy]( https://github.com/mesonbuild/meson-python) to build the package.
+> **Note:** Currently, we use unreleased mesonpy features, so we install it from git. 
+
+First, install Hatch: https://hatch.pypa.io/latest/install/. We recommend using [pipx](https://hatch.pypa.io/latest/install/#pipx).
+
+After you've installed Hatch, you can build the package with the following command:
+```sh
+hatch run install_editable
+```
+With this, you can start using the package in your code. 
+Spawn shell within the build environment:
+```sh
+hatch shell
+```
+It'll rebuild the package every time you import it, so you can test your changes.
+If you don't want to rebuild the package every time you import it, you can install it with:
+```sh
+hatch run install
+```
+But note that any changes you make won't be reflected in the installed package.
+
+To build the wheel, you can use:
+```sh
+hatch run dist:build
+```
+This will build the wheel for all python versions, and put it in the `dist` folder.
+
+### Testing
+
+To run tests for all python versions, run:
+```sh
+hatch run dist:test
+```
+To run tests for a specific python version, run:
+```sh
+hatch run +py=39 dist:test
+```
+
+Both commands will build, install the package into an isolated environment,
+ and run the tests in it.

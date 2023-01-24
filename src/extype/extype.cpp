@@ -528,16 +528,16 @@ static PyObject *enable_magic_method(PyObject *self, PyObject *args)
     {
         if (slot_result.error_code == INVALID_MAGIC_METHOD)
         {
-            PyErr_SetString(PyExc_ValueError, (std::string{"[ExTypes] Invalid magic method name: "} + method_name).c_str());
+            PyErr_SetString(PyExc_ValueError, (std::string{"[ExType] Invalid magic method name: "} + method_name).c_str());
             return NULL;
         }
         if (slot_result.error_code == NOT_IMPLEMENTED)
         {
-            PyErr_SetString(PyExc_TypeError, (std::string{"[ExTypes] Could not find a slot for method: "} + method_name).c_str());
+            PyErr_SetString(PyExc_TypeError, (std::string{"[ExType] Could not find a slot for method: "} + method_name).c_str());
             return NULL;
         }
 
-        PyErr_SetString(PyExc_RuntimeError, "[ExTypes] Unknown error :: get_magic_method_slot()");
+        PyErr_SetString(PyExc_RuntimeError, "[ExType] Unknown error :: get_magic_method_slot()");
         return NULL;
     }
 
@@ -549,7 +549,7 @@ static PyObject *enable_magic_method(PyObject *self, PyObject *args)
     {
         if (impl_result.error_code == NOT_IMPLEMENTED)
         {
-            PyErr_SetString(PyExc_NotImplementedError, (std::string{"[ExTypes] Method '"} + method_name + "' is not implemented").c_str());
+            PyErr_SetString(PyExc_NotImplementedError, (std::string{"[ExType] Method '"} + method_name + "' is not implemented").c_str());
             return NULL;
         }
         else
@@ -571,22 +571,22 @@ static PyObject *enable_magic_method(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
-static PyMethodDef ExTypesMethods[] = {
+static PyMethodDef ExTypeMethods[] = {
     {"get_builtin_type_dict", get_builtin_type_dict, METH_VARARGS, "get the builtin type's tp_dict slot"},
     {"implement_protocol_on_type", implement_protocol_on_type, METH_VARARGS, "implement protocols by the given flag"},
     {"enable_magic_method", enable_magic_method, METH_VARARGS, "enable magic method on"},
     {NULL, NULL, 0, NULL} /* Sentinel */
 };
 
-static PyModuleDef ExTypesModule{
+static PyModuleDef ExTypeModule{
     PyModuleDef_HEAD_INIT,
-    "extypes",                                          /* name of module */
-    "ExTypes enables extending any type super easily.", /* module documentation, may be NULL */
-    -1,                                                 /* size of per-interpreter state of the module,
-                                                           or -1 if the module keeps state in global variables. */
-    ExTypesMethods};
+    "extype",                                          /* name of module */
+    "ExType enables extending any type super easily.", /* module documentation, may be NULL */
+    -1,                                                /* size of per-interpreter state of the module,
+                                                          or -1 if the module keeps state in global variables. */
+    ExTypeMethods};
 
 PyMODINIT_FUNC PyInit_core(void)
 {
-    return PyModule_Create(&ExTypesModule);
+    return PyModule_Create(&ExTypeModule);
 }
