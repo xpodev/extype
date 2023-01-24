@@ -1,14 +1,19 @@
-py = import('python')
-py = py.find_installation(pure: false)
-python_dep = py.dependency()
+# https://mesonbuild.com/Python-module.html
+py_mod = import('python')
+python = py_mod.find_installation(pure: false)
+python_dep = python.dependency()
 
-py.install_sources([
-    '__init__.py',
-    ],
-    subdir: 'extypes',
+
+python_sources = [
+   '__init__.py',
+]
+
+python.install_sources(
+  python_sources,
+  subdir: 'extypes'
 )
 
-py.extension_module('core',
+python.extension_module('core',
     'extypes.cpp',
     install: true,
     subdir: 'extypes',
