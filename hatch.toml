@@ -12,14 +12,14 @@ clean_mesonpy = "python -c \"import shutil; shutil.rmtree('.mesonpy', ignore_err
 install_editable = "python -m pip install --verbose  -e . --config-settings editable-verbose=true"
 install = "python -m pip install --verbose ."
 
-[envs.test]
+[envs.dist]
 extra-dependencies = [
     "build",
     "pytest",
     "typing_extensions",
 ]
 
-[envs.test.scripts]
+[envs.dist.scripts]
 build = [
     "python -m build --no-isolation --wheel --sdist --outdir ./dist",
 ]
@@ -31,5 +31,5 @@ run = [
     "run_pytest"
 ]
 
-[[envs.test.matrix]]
+[[envs.dist.matrix]]
 python = ["37", "38", "39", "310", "311"]
