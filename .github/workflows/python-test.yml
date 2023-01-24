@@ -37,8 +37,8 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Build package
       run: |
-      python -m build
-      pip install dist/*.whl
+        python -m build
+        pip install dist/*.whl
     - name: Test with pytest
       run: |
         pytest
