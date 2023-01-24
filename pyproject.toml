@@ -1,45 +1,16 @@
-# [build-system]
-# requires = ["scikit-build-core[rich,pyproject]"]
-# build-backend = "scikit_build_core.build"
-
 [build-system]
-requires = ["setuptools>=42", "scikit-build", "cmake>=3.15", "ninja"]
-build-backend = "setuptools.build_meta"
+requires = [
+    # mesonpy, version 0.13.0 which isn't released yet
+    "meson-python @ git+https://github.com/mesonbuild/meson-python.git@61bb2b3315f4e312558778022ca6e87ffaed2700",
+]
+build-backend = 'mesonpy'
 
 [project]
 name = "extypes"
-version = "0.1.0"
 authors = [
     { name = "Xpo Development", email = "biny@xpo.dev" },
     { name = "Elazar Cohen", email = "elazarcoh@gmail.com" },
 ]
 description = "ExTypes is a Python package that allows you to externally extend types."
 requires-python = ">=3.7"
-
-[tool.scikit-build]
-wheel.packages = ["src/extypes"]
-
-[tool.hatch.envs.default]
-python = '3.7'
-dependencies = [
-    "build",
-    "pytest",
-    "setuptools>=42",
-    "scikit-build",
-    "cmake>=3.15",
-    "ninja",
-]
-skip-install = true
-
-[tool.hatch.envs.default.scripts]
-build = "python -m build --no-isolation"
-install_whl = "python -m pip install --force-reinstall --find-links ./dist --no-index extypes"
-pytest = "python -m pytest"
-test = ["install_whl", "pytest"]
-full-build = ["build", "install_whl", "test"]
-
-[tool.hatch.envs.build]
-template = 'default'
-
-[[tool.hatch.envs.build.matrix]]
-python = ["3.7", "3.8", "3.9", "3.10", "3.11"]
+dynamic = ["version"]

@@ -1,0 +1,35 @@
+[envs.default]
+python = '3.8'
+dependencies = [
+    "pip>=22.0.0",
+    # Make sure to update this when updating the build-requires in pyproject.toml
+    "meson-python @ git+https://github.com/mesonbuild/meson-python.git@61bb2b3315f4e312558778022ca6e87ffaed2700"
+]
+skip-install = true
+
+[envs.default.scripts]
+clean_mesonpy = "python -c \"import shutil; shutil.rmtree('.mesonpy', ignore_errors=True)\""
+install_editable = "python -m pip install --verbose  -e . --config-settings editable-verbose=true"
+install = "python -m pip install --verbose ."
+
+[envs.dist]
+extra-dependencies = [
+    "build",
+    "pytest",
+    "typing_extensions",
+]
+
+[envs.dist.scripts]
+build = [
+    "python -m build --no-isolation --wheel --sdist --outdir ./dist",
+]
+install_whl = "python -m pip install --force-reinstall --find-links ./dist --no-index extypes"
+run_pytest = "pytest"
+test = [
+    "build",
+    "install_whl",
+    "run_pytest"
+]
+
+[[envs.dist.matrix]]
+python = ["37", "38", "39", "310", "311"]
