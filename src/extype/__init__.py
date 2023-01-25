@@ -2,7 +2,7 @@ from enum import IntFlag
 from functools import reduce
 from typing import Callable, Generic, List, TypeVar, overload
 import typing
-from .core import get_builtin_type_dict, enable_magic_method
+from .core import enable_magic_method, implement_protocol_on_type, get_builtin_type_dict
 
 
 class Protocol(IntFlag):
