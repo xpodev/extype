@@ -48,7 +48,7 @@ static constexpr uint32_t NOT_IMPLEMENTED = 2U;
 // Implementations
 
 #define UNARY_OP_IMPL(name)                                                               \
-    static PyObject *impl##name##(PyObject * self)                                        \
+    static PyObject *impl##name## (PyObject * self)                                        \
     {                                                                                     \
         if (!PyObject_HasAttrString(self, #name))                                         \
         {                                                                                 \
@@ -60,7 +60,7 @@ static constexpr uint32_t NOT_IMPLEMENTED = 2U;
 #define UNARY_OP(name) UNARY_OP_IMPL(__##name##__)
 
 #define BINARY_OP_IMPL(name)                                                                     \
-    static PyObject *impl##name(PyObject *left, PyObject *right)                                 \
+    static PyObject *impl##name (PyObject *left, PyObject *right)                                 \
     {                                                                                            \
         if (!PyObject_HasAttrString(left, #name))                                                \
         {                                                                                        \
@@ -72,7 +72,7 @@ static constexpr uint32_t NOT_IMPLEMENTED = 2U;
 #define BINARY_OP(name) BINARY_OP_IMPL(__##name##__)
 
 #define _RBINARY_OP_IMPL(name, rname)                                                                        \
-    static PyObject *impl##name##(PyObject * left, PyObject * right)                                         \
+    static PyObject *impl##name## (PyObject * left, PyObject * right)                                         \
     {                                                                                                        \
         if (!PyObject_HasAttrString(left, #name))                                                            \
         {                                                                                                    \
@@ -103,7 +103,7 @@ static constexpr uint32_t NOT_IMPLEMENTED = 2U;
 #define RBINARY_OP(name) _RBINARY_OP_IMPL(__##name##__, __r##name##__)
 
 #define TERNARY_OP_IMPL(name)                                                                          \
-    static PyObject *impl##name(PyObject *self, PyObject *left, PyObject *right)                       \
+    static PyObject *impl##name (PyObject *self, PyObject *left, PyObject *right)                       \
     {                                                                                                  \
         if (!PyObject_HasAttrString(self, #name))                                                      \
         {                                                                                              \
@@ -440,7 +440,7 @@ static MagicMethodLookupResult get_magic_method_implementation(char const *name_
 #define _IMPL(method_name)        \
     if (name == #method_name)     \
     {                             \
-        return impl##method_name; \
+        return impl##method_name ; \
     }
 
 #define IMPL(method_name) _IMPL(__##method_name##__)
