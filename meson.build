@@ -4,8 +4,7 @@ project('extype',
     default_options: [
         'buildtype=release',
         'c_std=c17',
-        'cpp_std=c++17',
-        '/permissive=true'
+        'cpp_std=c++17'
     ]
 )
 
