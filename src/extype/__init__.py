@@ -12,7 +12,6 @@ class Protocol(IntFlag):
     Mapping = 1 << 2
 
 
-
 _T = TypeVar("_T")
 _U = TypeVar("_U")
 

@@ -10,7 +10,7 @@ def test_extends_descriptors():
 
     extend_type_with(list, ListExtensions)
 
-    test_list =  [1, 2, 3]
+    test_list = [1, 2, 3]
     assert test_list.length == 3
     test_list.append(4)
     assert test_list.length == 4
