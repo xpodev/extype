@@ -5,7 +5,7 @@ project('extype',
         'buildtype=release',
         'c_std=c17',
         'cpp_std=c++17',
-        'permissive=true'
+        '/permissive'
     ]
 )
 
