@@ -37,7 +37,10 @@ jobs:
     - name: Build package
       run: |
         python -m build
-        pip install dist/*.whl
+        Get-ChildItem "dist" -Filter *.whl | 
+        Foreach-Object {
+            pip install $_.FullName
+        }
     - name: Test with pytest
       run: |
         pytest
