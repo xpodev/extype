@@ -20,7 +20,7 @@ static int operator&(uint8_t const x, Protocols const y)
 struct MagicMethodLookupResult
 {
 private:
-    MagicMethodLookupResult(uint32_t error_code, void *ptr)
+    MagicMethodLookupResult(uint32_t error_code, void* ptr)
         : error_code{error_code}, result{ptr}
     {
     }
@@ -29,8 +29,9 @@ public:
     uint32_t error_code;
     void *result;
 
-    MagicMethodLookupResult(void *result)
-        : MagicMethodLookupResult{0, result}
+    template <typename T>
+    MagicMethodLookupResult(T result)
+        : MagicMethodLookupResult{0, static_cast<void*>(result)}
     {
     }
 
