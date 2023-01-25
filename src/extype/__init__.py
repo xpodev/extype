@@ -2,7 +2,7 @@ from enum import IntFlag
 from functools import reduce
 from typing import Callable, Generic, List, TypeVar, overload
 import typing
-from .core import *
+from .core import get_builtin_type_dict, enable_magic_method
 
 
 class Protocol(IntFlag):
@@ -10,7 +10,6 @@ class Protocol(IntFlag):
     Number = 1 << 0
     Sequence = 1 << 1
     Mapping = 1 << 2
-
 
 
 _T = TypeVar("_T")
