@@ -29,17 +29,16 @@ public:
     uint32_t error_code;
     void *result;
 
-    MagicMethodLookupResult(uint32_t ec)
-        : MagicMethodLookupResult{ec, NULL}
-    {
-    }
-
     MagicMethodLookupResult(void *result)
         : MagicMethodLookupResult{0, result}
     {
     }
 
     bool is_error() { return error_code != 0; }
+    
+    static MagicMethodLookupResult error(uint32_t ec) {
+      return MagicMethodLookupResult(ec, NULL);
+    }
 };
 
 static constexpr uint32_t INVALID_MAGIC_METHOD = 1U;
@@ -430,7 +429,7 @@ static MagicMethodLookupResult get_magic_method_slot(PyTypeObject *type, char co
 
 #undef SLOT
 
-    return INVALID_MAGIC_METHOD;
+    return MagicMethodLookupResult::error(INVALID_MAGIC_METHOD);
 }
 
 static MagicMethodLookupResult get_magic_method_implementation(char const *name_str)
@@ -510,7 +509,7 @@ static MagicMethodLookupResult get_magic_method_implementation(char const *name_
 #undef IMPL
 #undef _IMPL
 
-    return INVALID_MAGIC_METHOD;
+    return MagicMethodLookupResult::error(INVALID_MAGIC_METHOD);
 }
 
 static PyObject *enable_magic_method(PyObject *self, PyObject *args)
