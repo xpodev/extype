@@ -1,6 +1,6 @@
 from enum import IntFlag
 from typing import Generic, TypeVar
-from extype.core import enable_magic_method, get_type_dict
+from .core import enable_magic_method, get_type_dict
 
 
 _T = TypeVar("_T")

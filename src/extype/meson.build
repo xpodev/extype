@@ -6,6 +6,7 @@ python_dep = python.dependency()
 
 python_sources = [
    '__init__.py',
+   'extension_utils.py'
 ]
 
 python.install_sources(
@@ -18,3 +19,5 @@ python.extension_module('core',
     install: true,
     subdir: 'extype',
 )
+
+subdir('builtin_extensions')
