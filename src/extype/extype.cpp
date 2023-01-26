@@ -270,7 +270,7 @@ static PyObject *implement_protocol_on_type(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
-static PyObject *get_builtin_type_dict(PyObject *self, PyObject *args)
+static PyObject *get_type_dict(PyObject *self, PyObject *args)
 {
     PyTypeObject *type;
     PyArg_ParseTuple(args, "O", &type);
@@ -573,7 +573,7 @@ static PyObject *enable_magic_method(PyObject *self, PyObject *args)
 }
 
 static PyMethodDef ExTypeMethods[] = {
-    {"get_builtin_type_dict", get_builtin_type_dict, METH_VARARGS, "get the builtin type's tp_dict slot"},
+    {"get_type_dict", get_type_dict, METH_VARARGS, "get the given type's tp_dict slot"},
     {"implement_protocol_on_type", implement_protocol_on_type, METH_VARARGS, "implement protocols by the given flag"},
     {"enable_magic_method", enable_magic_method, METH_VARARGS, "enable magic method on"},
     {NULL, NULL, 0, NULL} /* Sentinel */
