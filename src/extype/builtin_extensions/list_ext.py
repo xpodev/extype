@@ -20,6 +20,23 @@ class ListExtension:
     A class that contains methods to extend the builtin `list` type.
     """
 
+    @overload
+    def any(self: List[_T]) -> bool: ...
+    @overload
+    def any(self: List[_T], fn: Callable[[_T], bool]) -> bool: ...
+
+    @extension
+    def any(self: List[_T], fn: Callable[[_T], bool] = bool) -> bool:
+        return any(map(fn, self))
+
+    @overload
+    def all(self: List[_T]) -> bool: ...
+    @overload
+    def all(self: List[_T], fn: Callable[[_T], bool]) -> bool: ...
+
+    def all(self: List[_T], fn: Callable[[_T], bool] = bool) -> bool:
+        return all(map(fn, self))
+
     @extension
     def map(self: List[_T], fn: Callable[[_T], _U]) -> List[_U]:
         return list(map(fn, self))
