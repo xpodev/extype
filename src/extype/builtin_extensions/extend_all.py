@@ -3,6 +3,7 @@ from . import (
     int_ext,
     float_ext,
     seq_ext,
+    function_ext,
 )
 
 for ext in [
@@ -10,5 +11,6 @@ for ext in [
     int_ext,
     float_ext,
     seq_ext,
+    function_ext,
 ]:
     ext.extend()
