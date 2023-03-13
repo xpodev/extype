@@ -34,6 +34,7 @@ class ListExtension:
     @overload
     def all(self: List[_T], fn: Callable[[_T], bool]) -> bool: ...
 
+    @extension
     def all(self: List[_T], fn: Callable[[_T], bool] = bool) -> bool:
         return all(map(fn, self))
 
