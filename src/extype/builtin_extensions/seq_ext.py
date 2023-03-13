@@ -23,7 +23,7 @@ class SeqExtension:
         return map(fn, self)
 
     @extension
-    def tolist(self: Iterable[_T]) -> Iterable[_T]:
+    def tolist(self: Iterable[_T]) -> List[_T]:
         return list(self)
 
     @extension
