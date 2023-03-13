@@ -13,7 +13,7 @@ class Protocol(IntFlag):
     Mapping = 1 << 2
 
 
-def extend_type_with(typ, cls):
+def extend_type_with(typ, cls, recurse_parents=True):
     """
     Extends the given type with methods from the given class
 
@@ -21,7 +21,14 @@ def extend_type_with(typ, cls):
     :cls: The class containing the methods to add to the given type
     """
 
+    if not isinstance(typ, type):
+        raise TypeError(f"argument 'typ' must be a valid type, got {type(typ)}")
+
     type_dict = get_type_dict(typ)
+
+    if recurse_parents:
+        for base in cls.__bases__:
+            extend_type_with(typ, base)
 
     for name in vars(cls):
         item = getattr(cls, name)

@@ -1,12 +1,11 @@
 from functools import reduce
 from typing import Callable, List, TypeVar, overload
-import typing
 from ..extension_utils import extend_type_with, extension
 
 
 __all__ = [
-    "list",
-    "extend"
+    "extend",
+    "ListExtension"
 ]
 
 
@@ -15,39 +14,57 @@ _U = TypeVar("_U")
 
 _DEFAULT = object()
 
-list = list
 
+class ListExtension:
+    """
+    A class that contains methods to extend the builtin `list` type.
+    """
 
-def _extend_list():
-    global list
+    @overload
+    def any(self: List[_T]) -> bool: ...
+    @overload
+    def any(self: List[_T], fn: Callable[[_T], bool]) -> bool: ...
 
-    class ListExtension(type([])):
-        """
-        A class that contains methods to extend the builtin `list` type.
+    @extension
+    def any(self: List[_T], fn: Callable[[_T], bool] = bool) -> bool:
+        return any(map(fn, self))
 
-        This class inherits the `list` type so that `self` would be of type `list`
-        """
+    @overload
+    def all(self: List[_T]) -> bool: ...
+    @overload
+    def all(self: List[_T], fn: Callable[[_T], bool]) -> bool: ...
 
-        @extension
-        def map(self: List[_T], fn: Callable[[_T], _U]) -> List[_U]:
-            return list(map(fn, self))
+    @extension
+    def all(self: List[_T], fn: Callable[[_T], bool] = bool) -> bool:
+        return all(map(fn, self))
 
-        @overload
-        def reduce(self: List[_T], fn: Callable[[_T, _T], _T]) -> List[_T]: ...
-        @overload
-        def reduce(self: List[_T], fn: Callable[[_T, _T], _T], initial: _T) -> List[_T]: ...
+    @extension
+    def map(self: List[_T], fn: Callable[[_T], _U]) -> List[_U]:
+        return list(map(fn, self))
 
-        @extension
-        def reduce(self: List[_T], fn: Callable[[_T, _T], _T], initial: _T = _DEFAULT) -> List[_T]:
-            if initial is _DEFAULT:
-                return reduce(fn, self)
-            return reduce(fn, self, initial)
+    @overload
+    def reduce(self: List[_T], fn: Callable[[_T, _T], _T]) -> List[_T]: ...
+    @overload
+    def reduce(self: List[_T], fn: Callable[[_T, _T], _T], initial: _T) -> List[_T]: ...
 
-    extend_type_with(list, ListExtension)
+    @extension
+    def reduce(self: List[_T], fn: Callable[[_T, _T], _T], initial: _T = _DEFAULT) -> List[_T]:
+        if initial is _DEFAULT:
+            return reduce(fn, self)
+        return reduce(fn, self, initial)
 
-    if typing.TYPE_CHECKING:
-        list = ListExtension
+    @extension
+    def filter(self: List[_T], predicate: Callable[[_T], bool]) -> List[_T]:
+        return list(filter(predicate, self))
+
+    @extension
+    def first(self: List[_T]) -> _T:
+        return self[0]
+
+    @extension
+    def last(self: List[_T]) -> _T:
+        return self[-1]
 
 
 def extend():
-    _extend_list()
+    extend_type_with(list, ListExtension)
