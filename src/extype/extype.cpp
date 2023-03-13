@@ -534,7 +534,7 @@ static PyObject *enable_magic_method(PyObject *self, PyObject *args)
         }
         if (slot_result.error_code == NOT_IMPLEMENTED)
         {
-            PyErr_SetString(PyExc_TypeError, (std::string{"[ExType] Could not find a slot for method: "} + method_name).c_str());
+            PyErr_SetString(PyExc_TypeError, (std::string{"[ExType] Could not find a slot for method (protocol not implemented): "} + method_name).c_str());
             return NULL;
         }
 
