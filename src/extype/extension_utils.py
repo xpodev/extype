@@ -22,7 +22,7 @@ def extend_type_with(typ, cls, recurse_parents=True):
     """
 
     if not isinstance(typ, type):
-        raise TypeError("argument 'typ' must be a valid type")
+        raise TypeError(f"argument 'typ' must be a valid type, got {type(typ)}")
 
     type_dict = get_type_dict(typ)
 
