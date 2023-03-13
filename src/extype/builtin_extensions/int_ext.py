@@ -18,11 +18,11 @@ class IntExtension:
 
     @extension
     def oct(self: int) -> str:
-        oct(self)
+        return oct(self)
 
     @extension
     def bin(self: int) -> str:
-        bin(self)
+        return bin(self)
 
 
 def extend():
