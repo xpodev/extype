@@ -34,3 +34,5 @@ class SeqExtension:
 def extend():
     extend_type_with(map, SeqExtension)
     extend_type_with(filter, SeqExtension)
+    extend_type_with(range, SeqExtension)
+    extend_type_with(zip, SeqExtension)
