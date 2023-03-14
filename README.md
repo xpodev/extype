@@ -65,7 +65,7 @@ There's a list of all the built-in extensions [here](#built-in-extensions)
 
 
 ### Creating your own extensions
-You can create your own extension methods, with which you can extend any type you want!
+You can create your own extension methods, with which you can extend any type you want! (not only builtins)
 For example, let's make our own `tofloat` function in the `int` type.
 What we want to have at the end is:
 ```py
