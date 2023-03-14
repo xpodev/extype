@@ -47,8 +47,9 @@ list_ext.extend()
 Currently, we provide the following extensions:
 
 
-|   dict_ext.py   | dict_keys, dict_values, dict_items |
+|       file      |           extended types           |
 |:---------------:|:----------------------------------:|
+|   dict_ext.py   | dict_keys, dict_values, dict_items |
 |   float_ext.py  |                float               |
 | function_ext.py |      FunctionType, LambdaType      |
 |    int_ext.py   |                 int                |
