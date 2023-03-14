@@ -26,23 +26,52 @@ import extype
 ```
 
 Then, you can use the built-in extensions for the builtin types. In order to apply these extensions, 
-call the `extend_builtin_types` function:
+import the `extend_all` module from the `extype.builtin_extensions` package:
 ```py
-extype.extend_builtin_types()
+from extype.builtin_extensions import extend_all
+```
+This will apply the extensions to all builtins we support, *as a side-effect of the import* (to extend only some builtins, you can use the dedicated modules, see below).
+
+Sometimes you don't want to apply all the extensions that we provide, but only for some specific type(s).
+
+Say, for example, we only want to apply the provided extensions for `list`. We'll need to manually
+apply them like so:
+```py
+from extype.builtin_extensions import list_ext
+
+list_ext.extend()
 ```
 
-The built-in extensions include a map function for the `list` type:
+> **Note:** All built-in extension modules have an `extend` function which will apply the extensions in the module to the relevant type.
+
+Currently, we provide the following extensions:
+
+
+|       file      |           extended types           |
+|:---------------:|:----------------------------------:|
+|   dict_ext.py   | dict_keys, dict_values, dict_items |
+|   float_ext.py  |                float               |
+| function_ext.py |      FunctionType, LambdaType      |
+|    int_ext.py   |                 int                |
+|   list_ext.py   |                list                |
+|    seq_ext.py   |       map, filter, range, zip      |
+
+
+Then you can use these extensions. Here's an example of using the `list.map` extension:
 ```py
 print([1, 2, 3].map(lambda x: x + 1))  # [2, 3, 4]
 ```
 
+There's a list of all the built-in extensions [here](#built-in-extensions)
+
+
 ### Creating your own extensions
-You can create your own extension methods, with which you can extend any type you want!
-For example, let's make our own hex function in the `int` type.
+You can create your own extension methods, with which you can extend any type you want! (not only builtins)
+For example, let's make our own `tofloat` function in the `int` type.
 What we want to have at the end is:
 ```py
-x = 0xFA
-print(x.hex())  # 0xfa
+x = 10
+print(isinstance(x.tofloat(), float))  # True
 ```
 
 First, we'll need some tools:
@@ -55,19 +84,19 @@ It is also recommended to make this class inherit the type you want to extend, s
 ```py
 class IntExtension(int):  # inheriting `int` for typing
   @extension  # marks this method to be added as an extension
-  def hex(self):  # self will be of the same type we extend, which, in this case, is `int`
-    return hex(self)
+  def tofloat(self):  # self will be of the same type we extend, which, in this case, is `int`
+    return float(self)  # convert the int to float and return the result
 ```
 
-After we create the class which will contain the extension methods, we need to apply to to the types we want to extend:
+After we create the class which will contain the extension methods, we need to apply them to the types we want to extend:
 ```py
 extend_type_with(int, IntExtension)
 ```
 
 Now, we can run the code from above:
 ```py
-x = 0xFA
-print(x.hex())  # 0xfa
+x = 10
+print(isinstance(x.tofloat(), float))  # True
 ```
 
 We can also apply multiple extensions to the same type or even the same extension to multiple types.
@@ -135,3 +164,101 @@ hatch run +py=39 dist:test
 
 Both commands will build, install the package into an isolated environment,
  and run the tests in it.
+
+
+### Built-in Extensions
+
+> **Note:** All of the following `list` extensions also exist on `dict_keys`, `dict_values` and `dict_items`.
+
+```py
+list.all(self: List[T], fn: Callable[[T], bool] = bool) -> bool
+```
+Returns true if all elements, mapped through the given `fn`, are `True`.
+
+```py
+list.any(self: List[T], fn: Callable[[T], bool] = bool) -> bool
+```
+Returns true if any of the elements, mapped through the given `fn`, is `True`.
+
+```py
+list.map(self: List[T], fn: Callable[[T], U]) -> List[U]
+```
+Returns a new list whose elements are the result of applying the given function on each element in the original list.
+
+```py
+list.reduce(self: List[T], fn: Callable[[T, T], T]) -> T
+```
+Reduces the list to a single value, using the given function as the reduction (combination) function.
+
+Raises `TypeError` if the list is empty.
+
+```py
+list.reduce(self: List[T], fn: Callable[[U, T], U], initial_value: U) -> U
+```
+Reduces the list to a single value, using the given function as the reduction (combination) function and the initial value.
+
+```py
+list.filter(self: List[T], fn: Callable[[T], bool]) -> List[T]
+```
+Returns a new list containing all the elements that match the given predicate `fn`.
+
+```py
+list.first(self: List[T]) -> T, raise IndexError
+```
+Returns the first element in the list, or raises an `IndexError` if the list is empty.
+
+```py
+list.last(self: List[T]) -> T, raise IndexError
+```
+Returns the last element in the list, or raises `IndexError` if the list is empty.
+
+```py
+float.round(self: float) -> int
+```
+Rounds the floating point number to the nearest integer.
+
+```py
+float.round(self: float, ndigits: int) -> int | float
+```
+Round the floating point number to the nearest float with `ndigits` fraction digits.
+
+```py
+# function @ functioin
+function.__matmul__(self: Callable[[T], U], other: Callable[..., T]) -> Callable[..., U]
+```
+Compose 2 functions such that doing `(foo @ bar)(*args, **kwargs)` will have the same result as calling `foo(bar(*args, **kwargs))`.
+
+```py
+int.hex(self: int) -> str
+```
+Returns the hexadecimal representation of the integer.
+
+```py
+int.oct(self: int) -> str
+```
+Returns the octal representation of the integer.
+
+```py
+int.bin(self: int) -> str
+```
+Returns the binary representation of the integer.
+
+* The following extensions are valid for `map`, `filter`, `range` and `zip`
+```py
+.tolist(self: Iterable[T]) -> List[T]
+```
+Exhausts the iterble and creates a list from it.
+
+```py
+.map(self: Iterable[T], fn: Callable[[T], U]) -> Iterable[U]
+```
+Maps the iterable with the given function to create a new iterable.
+
+This does not iterates through the original iterable.
+
+```py
+.filter(self: Iterable[T], fn: Callable[[T], bool]) -> Iterable[T]
+```
+Filters the iterable with the given function as the predicate function.
+
+This does not iterates through the original iterable.

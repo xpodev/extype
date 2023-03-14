@@ -193,6 +193,9 @@ def test_list_map():
 
 
 def test_list_reduce():
+    with pytest.raises(TypeError):
+        [].reduce(int.__add__)
+
     assert [1, 2, 3].reduce(int.__add__) == 6
 
     assert [1, 2, 3].reduce(int.__add__, 5) == 6 + 5
