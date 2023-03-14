@@ -167,7 +167,7 @@ Reduces the list to a single value, using the given function as the reduction (c
 Raises `TypeError` if the list is empty.
 
 ```py
-list.reduce(self: List[T], fn: Callable[[T, T], T], initial_value: T) -> T
+list.reduce(self: List[T], fn: Callable[[U, T], U], initial_value: U) -> U
 ```
 Reduces the list to a single value, using the given function as the reduction (combination) function and the initial value.
 
