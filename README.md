@@ -30,6 +30,31 @@ import the `extend_all` module from the `extype.builtin_extensions` package:
 ```py
 from extype.builtin_extensions import extend_all
 ```
+This will apply the extensions to all builtins we support, *as a side-effect of the import* (to extend only some builtins, you can use the dedicated modules, see below).
+
+Sometimes you don't want to apply all the extensions that we provide, but only for some specific type(s).
+
+Say, for example, we only want to apply the provided extensions for `list`. We'll need to manually
+apply them like so:
+```py
+from extype.builtin_extensions import list_ext
+
+list_ext.extend()
+```
+
+> **Note:** All built-in extension modules have an `extend` function which will apply the extensions in the module to the relevant type.
+
+Currently, we provide the following extensions:
+
+
+|   dict_ext.py   | dict_keys, dict_values, dict_items |
+|:---------------:|:----------------------------------:|
+|   float_ext.py  |                float               |
+| function_ext.py |      FunctionType, LambdaType      |
+|    int_ext.py   |                 int                |
+|   list_ext.py   |                list                |
+|    seq_ext.py   |       map, filter, range, zip      |
+
 
 Then you can use these extensions. Here's an example of using the `list.map` extension:
 ```py
