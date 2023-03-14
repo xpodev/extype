@@ -12,5 +12,7 @@ authors = [
     { name = "Elazar Cohen", email = "elazarcoh@gmail.com" },
 ]
 description = "ExType is a Python package that allows you to externally extend types."
+long_description = "README.md"
 requires-python = ">=3.7"
 dynamic = ["version"]
+
