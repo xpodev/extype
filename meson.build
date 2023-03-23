@@ -1,6 +1,6 @@
 project('extype',
     'cpp',
-    version: '1.0.4',
+    version: '1.0.0',
     default_options: [
         'buildtype=release',
         'c_std=c17',
