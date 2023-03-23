@@ -18,3 +18,4 @@ dynamic = ["version"]
 
 [tool.cibuildwheel]
 skip = "pp*"
+build-frontend = "build"
