@@ -8,7 +8,7 @@ build-backend = 'mesonpy'
 [project]
 name = "extype"
 authors = [
-    { name = "Xpo Development", email = "biny@xpo.dev" },
+    { name = "Xpo Development", email = "binyamincohen555@gmail.com" },
     { name = "Elazar Cohen", email = "elazarcoh@gmail.com" },
 ]
 description = "ExType is a Python package that allows you to externally extend types."
