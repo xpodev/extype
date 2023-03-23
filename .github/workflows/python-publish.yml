@@ -41,59 +41,53 @@ jobs:
       if: github.event.inputs.build == 'true'
       # run: python -m build --wheel --sdist --outdir dist/
       run: python -m cibuildwheel --output-dir dist/
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-linux
+        path: dist/*.whl
+
+  windows-and-macos:
+    name: Build for Windows & Mac
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ["windows-latest", "macos-11"]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build
+    - name: Build package
+      run: python -m build
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-win-mac
+        path: dist/*.whl
+
+  upload:
+    name: Upload Wheels
+    needs: ["linux", "windows-and-macos"]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: ["build-linux", "build-win-mac"]
+        path: dist/
+    - name: Dist Directory Tree
+      run: ls dist/ -R
     - name: Publish package
-      if: github.event.inputs.build == 'true'
-      uses: pypa/gh-action-pypi-publish@release/v1
+      uses: pypa/gh-action-pypi-publish@v1.8.3
       with:
         user: __token__
         password: ${{ secrets.TEST_PYPI_API_TOKEN }}
         repository-url: https://test.pypi.org/legacy/
-
-  windows:
-    name: Build for Windows
-
-    runs-on: windows-2019
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.x'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install build
-    - name: Build package
-      run: python -m build
-    - name: Publish package
-      uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
-      with:
-        user: __token__
-        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        repository_url: https://test.pypi.org/legacy/
-
-
-  mac:
-    name: Build for Mac
-
-    runs-on: macos-11
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.x'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install build
-    - name: Build package
-      run: python -m build
-    - name: Publish package
-      uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
-      with:
-        user: __token__
-        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        repository_url: https://test.pypi.org/legacy/
