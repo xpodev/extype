@@ -19,7 +19,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
   
 jobs:
   linux:
@@ -99,5 +98,4 @@ jobs:
       uses: pypa/gh-action-pypi-publish@v1.8.3
       with:
         user: __token__
-        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        repository-url: https://test.pypi.org/legacy/
+        password: ${{ secrets.PYPI_API_TOKEN }}
