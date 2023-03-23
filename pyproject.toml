@@ -16,3 +16,5 @@ readme = "README.md"
 requires-python = ">=3.7"
 dynamic = ["version"]
 
+[tool.cibuildwheel]
+skip = "pp*"
