@@ -25,7 +25,7 @@ jobs:
   deploy:
 
     runs-on: ${{ matrix.os }}
-    startegy:
+    strategy:
       matrix:
         os: ["ubuntu-latest", "windows-2019", "macos-11"]
 
