@@ -22,7 +22,7 @@ permissions:
   id-token: write
   
 jobs:
-  Build for Linux:
+  "Build for Linux":
 
     runs-on: ubuntu-latest
 
@@ -48,7 +48,7 @@ jobs:
         password: ${{ secrets.TEST_PYPI_API_TOKEN }}
         repository-url: https://test.pypi.org/legacy/
 
-  Build for Windows & Mac:
+  "Build for Windows & Mac":
 
     runs-on: ubuntu-latest
 
