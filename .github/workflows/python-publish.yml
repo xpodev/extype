@@ -78,10 +78,15 @@ jobs:
     needs: ["linux", "windows-and-macos"]
     runs-on: ubuntu-latest
     steps:
-    - name: Download Artifacts
+    - name: Download Artifacts for Linux
       uses: actions/download-artifact@v3
       with:
-        name: ["build-linux", "build-win-mac"]
+        name: build-linux
+        path: dist/
+    - name: Download Artifacts for Windows & Mac
+      uses: actions/download-artifact@v3
+      with:
+        name: build-win-mac
         path: dist/
     - name: Dist Directory Tree
       run: ls dist/ -R
