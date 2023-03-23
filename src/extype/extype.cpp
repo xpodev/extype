@@ -134,10 +134,10 @@ static int impl__bool__(PyObject *self)
     {
         PyErr_SetString(
             PyExc_NotImplementedError,
-            /*(std::string{"Type "} +
+            (std::string{"Type "} +
              _PyType_Name((PyTypeObject *)PyObject_Type(self)) +
              " does not implement the '__bool__' method")
-                .c_str()*/"");
+                .c_str());
     }
     return PyObject_IsTrue(PyObject_Call(PyObject_GetAttrString(self, "__bool__"), PyTuple_Pack(0), NULL));
 }
