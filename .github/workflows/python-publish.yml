@@ -43,7 +43,7 @@ jobs:
       if: github.event.inputs.build == 'true'
       # run: python -m build --wheel --sdist --outdir dist/
       env:
-        CIBW_PROJECT_REQUIRES_PYTHON: ${{ matrix.python-version }}
+        CIBW_PROJECT_REQUIRES_PYTHON: ${{ matrix.python-version }}.*
       run: python -m cibuildwheel --output-dir dist/
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
