@@ -6,7 +6,8 @@ python_sources = [
     'function_ext.py',
     'int_ext.py',
     'list_ext.py',
-    'seq_ext.py'
+    'seq_ext.py',
+    'str_ext.py'
 ]
 
 

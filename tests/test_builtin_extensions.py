@@ -296,3 +296,29 @@ def test_seq_filter():
 
 ###################################################
 
+
+# str extensions tests
+
+
+def test_str_to_int():
+    assert "1".to_int() == 1
+    assert "-1".to_int() == -1
+    assert isinstance("15".to_int(), int)
+    with pytest.raises(ValueError):
+        "asd".to_int()
+    assert "asd".to_int(default=None) is None
+    assert "10".to_int(base=2) == 2
+
+
+def test_str_to_float():
+    assert "1".to_float() == 1
+    assert "-1".to_float() == -1
+    assert "1.5".to_float() == 1.5
+    assert isinstance("15".to_float(), float)
+    with pytest.raises(ValueError):
+        "asd".to_float()
+    assert "asd".to_float(default=None) is None
+
+
+###################################################
+
