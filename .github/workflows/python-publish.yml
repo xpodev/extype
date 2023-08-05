@@ -39,7 +39,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install build git+https://github.com/binyamin555/cibuildwheel
     - name: Build package
-      if: github.event.inputs.build == 'true'
+      # if: github.event.inputs.build == 'true'
       # run: python -m build --wheel --sdist --outdir dist/
       env:
         CIBW_PROJECT_REQUIRES_PYTHON: ==${{ matrix.python-version }}.*
