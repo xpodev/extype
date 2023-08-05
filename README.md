@@ -50,12 +50,12 @@ Currently, we provide the following extensions:
 |       file      |           extended types           |
 |:---------------:|:----------------------------------:|
 |   dict_ext.py   | dict_keys, dict_values, dict_items |
-|   float_ext.py  |                float               |
-| function_ext.py |      FunctionType, LambdaType      |
-|    int_ext.py   |                 int                |
-|   list_ext.py   |                list                |
-|    seq_ext.py   |       map, filter, range, zip      |
-|    str_ext.py   |          to_int, to_float          |
+|   float_ext.py  | float |
+| function_ext.py | FunctionType, LambdaType  |
+|    int_ext.py   | int |
+|   list_ext.py   | list |
+|    seq_ext.py   | map, filter, range, zip |
+|    str_ext.py   | str |
 
 
 
