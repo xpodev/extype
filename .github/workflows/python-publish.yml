@@ -50,13 +50,12 @@ jobs:
         name: build-linux
         path: dist/*.whl
 
-  windows-and-macos:
-    name: Build for Windows & Mac
+  windows:
+    name: Build for Windows
 
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-2019
     strategy:
       matrix:
-        os: ["windows-2019", "macos-11"]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
 
     steps:
@@ -74,12 +73,38 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: build-win-mac
+        name: build-win
+        path: dist/*.whl
+
+  macos:
+    name: Build for Mac
+
+    runs-on: macos-11
+    strategy:
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build
+    - name: Build package
+      run: python -m build
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-mac
         path: dist/*.whl
 
   upload:
     name: Upload Wheels
-    needs: ["linux", "windows-and-macos"]
+    needs: ["linux", "windows", "macos"]
     runs-on: ubuntu-latest
     steps:
     - name: Download Artifacts for Linux
@@ -87,10 +112,15 @@ jobs:
       with:
         name: build-linux
         path: dist/
-    - name: Download Artifacts for Windows & Mac
+    - name: Download Artifacts for Windows
       uses: actions/download-artifact@v3
       with:
-        name: build-win-mac
+        name: build-win
+        path: dist/
+    - name: Download Artifacts for Mac
+      uses: actions/download-artifact@v3
+      with:
+        name: build-mac
         path: dist/
     - name: Dist Directory Tree
       run: ls dist/ -R
