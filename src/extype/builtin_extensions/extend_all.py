@@ -5,6 +5,7 @@ from . import (
     seq_ext,
     function_ext,
     dict_ext,
+    str_ext,
 )
 
 for ext in [
@@ -14,5 +15,6 @@ for ext in [
     seq_ext,
     function_ext,
     dict_ext,
+    str_ext,
 ]:
     ext.extend()
