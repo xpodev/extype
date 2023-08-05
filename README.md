@@ -55,6 +55,8 @@ Currently, we provide the following extensions:
 |    int_ext.py   |                 int                |
 |   list_ext.py   |                list                |
 |    seq_ext.py   |       map, filter, range, zip      |
+|    str_ext.py   |          to_int, to_float          |
+
 
 
 Then you can use these extensions. Here's an example of using the `list.map` extension:
@@ -242,6 +244,20 @@ Returns the octal representation of the integer.
 int.bin(self: int) -> str
 ```
 Returns the binary representation of the integer.
+
+```py
+str.to_int(self: str, base: int = 10, default: T = ...) -> int | T
+```
+Converts the given string to an int with the given base. If it can't be
+converted and `default` is given, it is returned. Otherwise, a `ValueError`
+is thrown.
+
+```py
+str.to_float(self: str, default: T = ...) -> float | T
+```
+Converts the given string to a float. If it can't be
+converted and `default` is given, it is returned. Otherwise, a `ValueError`
+is thrown.
 
 * The following extensions are valid for `map`, `filter`, `range` and `zip`
 ```py
