@@ -43,7 +43,7 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v6
       with:
-        name: build-linux
+        name: build-linux-${{ matrix.python-version }}
         path: dist/*.whl
 
   windows:
@@ -73,7 +73,7 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v6
       with:
-        name: build-win
+        name: build-win-${{ matrix.python-version }}
         path: dist/*.whl
 
   macos:
@@ -99,7 +99,7 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v6
       with:
-        name: build-mac
+        name: build-mac-${{ matrix.python-version }}
         path: dist/*.whl
 
   upload:
@@ -107,20 +107,10 @@ jobs:
     needs: ["linux", "windows", "macos"]
     runs-on: ubuntu-latest
     steps:
-    - name: Download Artifacts for Linux
-      uses: actions/download-artifact@v3
+    - name: Download Artifacts
+      uses: actions/download-artifact@v5
       with:
-        name: build-linux
-        path: dist/
-    - name: Download Artifacts for Windows
-      uses: actions/download-artifact@v3
-      with:
-        name: build-win
-        path: dist/
-    - name: Download Artifacts for Mac
-      uses: actions/download-artifact@v3
-      with:
-        name: build-mac
+        pattern: build-*.whl
         path: dist/
     - name: Dist Directory Tree
       run: ls dist/ -R
