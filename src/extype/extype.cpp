@@ -275,8 +275,24 @@ static PyObject *get_type_dict(PyObject *self, PyObject *args)
     PyTypeObject *type;
     PyArg_ParseTuple(args, "O", &type);
 
-    Py_INCREF(type->tp_dict);
-    return type->tp_dict;
+#if PY_VERSION_HEX >= 0x030C0000
+
+    auto dict = PyType_GetDict(type);
+
+#else
+    
+    auto dict = type->tp_dict;
+    
+#endif
+
+    if (dict == NULL)
+    {
+        PyErr_SetString(PyExc_RuntimeError, "type dict was null");
+        return NULL;
+    }
+    
+    Py_INCREF(dict);
+    return dict;
 }
 
 static MagicMethodLookupResult get_magic_method_slot(PyTypeObject *type, char const *name_str)
@@ -563,6 +579,7 @@ static PyObject *enable_magic_method(PyObject *self, PyObject *args)
 
     if (slot == NULL)
     {
+        PyErr_SetString(PyExc_RuntimeError, "slot was null");
         PyErr_SetString(PyExc_RuntimeError, "slot was null");
         return NULL;
     }

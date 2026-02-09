@@ -1,5 +1,6 @@
 from extype.core import *
-from extype import extension, extend_type_with, Protocol
+from extype.extension_utils import Protocol
+from extype import extension, extend_type_with
 
 
 def _():

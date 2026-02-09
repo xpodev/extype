@@ -1,9 +1,6 @@
 [build-system]
-requires = [
-    # mesonpy, version 0.13.0 which isn't released yet
-    "meson-python @ git+https://github.com/mesonbuild/meson-python.git@61bb2b3315f4e312558778022ca6e87ffaed2700",
-]
-build-backend = 'mesonpy'
+build-backend = "mesonpy"
+requires = ["meson-python"]
 
 [project]
 name = "extype"
@@ -19,3 +16,11 @@ dynamic = ["version"]
 [tool.cibuildwheel]
 skip = "pp*"
 build-frontend = "build"
+
+[dependency-groups]
+dev = [
+    "meson>=1.10.1",
+    "meson-python>=0.17.1",
+    "ninja>=1.11.1.4",
+]
+test = ["pytest>=7.4.4", "typing-extensions>=4.7.1"]
