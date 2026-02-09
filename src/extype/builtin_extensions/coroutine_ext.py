@@ -1,4 +1,4 @@
-from inspect import iscoroutinefunction
+from inspect import iscoroutine
 from typing import Awaitable, Callable, TypeVar
 
 from ..extension_utils import extend_type_with, extension
@@ -35,7 +35,7 @@ class CoroutineExtension:
         """
         async def _then():
             result = fn(await self)
-            if iscoroutinefunction(fn):
+            if iscoroutine(result):
                 return await result
             return result
 
@@ -67,7 +67,7 @@ class CoroutineExtension:
                 return await self
             except exception as e:
                 result = fn(e)
-                if iscoroutinefunction(fn):
+                if iscoroutine(result):
                     return await result
                 return result
 
