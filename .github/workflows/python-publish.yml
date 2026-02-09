@@ -110,7 +110,7 @@ jobs:
     - name: Download Artifacts
       uses: actions/download-artifact@v5
       with:
-        pattern: build-*.whl
+        pattern: build-*
         path: dist/
     - name: Dist Directory Tree
       run: ls dist/ -R
