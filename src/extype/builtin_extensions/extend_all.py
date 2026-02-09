@@ -6,6 +6,7 @@ from . import (
     function_ext,
     dict_ext,
     str_ext,
+    coroutine_ext,
 )
 
 for ext in [
@@ -16,5 +17,6 @@ for ext in [
     function_ext,
     dict_ext,
     str_ext,
+    coroutine_ext,
 ]:
     ext.extend()

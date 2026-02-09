@@ -23,4 +23,4 @@ dev = [
     "meson-python>=0.17.1",
     "ninja>=1.11.1.4",
 ]
-test = ["pytest>=7.4.4", "typing-extensions>=4.7.1"]
+test = ["pytest>=7.4.4", "pytest-asyncio>=0.21.0", "typing-extensions>=4.7.1"]

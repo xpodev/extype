@@ -47,15 +47,16 @@ list_ext.extend()
 Currently, we provide the following extensions:
 
 
-|       file      |           extended types           |
-|:---------------:|:----------------------------------:|
-|   dict_ext.py   | dict_keys, dict_values, dict_items |
-|   float_ext.py  | float |
-| function_ext.py | FunctionType, LambdaType  |
-|    int_ext.py   | int |
-|   list_ext.py   | list |
-|    seq_ext.py   | map, filter, range, zip |
-|    str_ext.py   | str |
+|       file       |           extended types           |
+|:----------------:|:----------------------------------:|
+| coroutine_ext.py | coroutine (async functions)       |
+|   dict_ext.py    | dict_keys, dict_values, dict_items |
+|   float_ext.py   | float |
+| function_ext.py  | FunctionType, LambdaType  |
+|    int_ext.py    | int |
+|   list_ext.py    | list |
+|    seq_ext.py    | map, filter, range, zip |
+|    str_ext.py    | str |
 
 
 
@@ -213,6 +214,36 @@ Returns the first element in the list, or raises an `IndexError` if the list is 
 list.last(self: List[T]) -> T, raise IndexError
 ```
 Returns the last element in the list, or raises `IndexError` if the list is empty.
+
+```py
+coroutine.then(self: Awaitable[T], fn: Callable[[T], Awaitable[U] | U]) -> Awaitable[U]
+```
+Maps the result of the awaitable via an optionally async function. If the function is async, it is awaited in the context of the wrapped awaitable.
+
+Example:
+```py
+async def get_value():
+    return 10
+
+result = await get_value().then(lambda x: x * 2)  # result is 20
+```
+
+```py
+coroutine.catch(self: Awaitable[T], fn: Callable[[E], Awaitable[U] | U], *, exception: type[E] = Exception) -> Awaitable[T | U]
+```
+Catches an exception of the given type and calls the passed function with the caught exception.
+
+If no exception was raised inside the wrapped awaitable, the function will not be called.
+The passed function can optionally return a value to be returned in case of an error.
+The passed function can be either sync or async. If it's async, it is awaited in the context of the wrapped awaitable.
+
+Example:
+```py
+async def might_fail():
+    raise ValueError("error")
+
+result = await might_fail().catch(lambda e: "default", exception=ValueError)  # result is "default"
+```
 
 ```py
 float.round(self: float) -> int
