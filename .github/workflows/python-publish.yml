@@ -41,7 +41,7 @@ jobs:
         CIBW_PROJECT_REQUIRES_PYTHON: ==${{ matrix.python-version }}.*
       run: python -m cibuildwheel --output-dir dist/
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v6
       with:
         name: build-linux
         path: dist/*.whl
@@ -71,7 +71,7 @@ jobs:
     - name: Build package
       run: python -m build
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v6
       with:
         name: build-win
         path: dist/*.whl
@@ -97,7 +97,7 @@ jobs:
     - name: Build package
       run: python -m build
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v6
       with:
         name: build-mac
         path: dist/*.whl
