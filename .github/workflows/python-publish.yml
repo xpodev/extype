@@ -112,6 +112,7 @@ jobs:
       with:
         pattern: build-*
         path: dist/
+        merge-multiple: true
     - name: Dist Directory Tree
       run: ls dist/ -R
     - name: Publish package
