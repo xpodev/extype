@@ -19,7 +19,7 @@ permissions:
 jobs:
   linux:
     name: Build for Linux
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
@@ -33,7 +33,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install build git+https://github.com/binyamin555/cibuildwheel
+        pip install build cibuildwheel
     - name: Build package
       # if: github.event.inputs.build == 'true'
       # run: python -m build --wheel --sdist --outdir dist/
@@ -43,7 +43,7 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v6
       with:
-        name: build-linux
+        name: build-linux-${{ matrix.python-version }}
         path: dist/*.whl
 
   windows:
@@ -73,13 +73,13 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v6
       with:
-        name: build-win
+        name: build-win-${{ matrix.python-version }}
         path: dist/*.whl
 
   macos:
     name: Build for Mac
 
-    runs-on: macos-11
+    runs-on: macos-15-intel
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
@@ -99,7 +99,7 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v6
       with:
-        name: build-mac
+        name: build-mac-${{ matrix.python-version }}
         path: dist/*.whl
 
   upload:
@@ -107,21 +107,12 @@ jobs:
     needs: ["linux", "windows", "macos"]
     runs-on: ubuntu-latest
     steps:
-    - name: Download Artifacts for Linux
-      uses: actions/download-artifact@v3
+    - name: Download Artifacts
+      uses: actions/download-artifact@v5
       with:
-        name: build-linux
+        pattern: build-*
         path: dist/
-    - name: Download Artifacts for Windows
-      uses: actions/download-artifact@v3
-      with:
-        name: build-win
-        path: dist/
-    - name: Download Artifacts for Mac
-      uses: actions/download-artifact@v3
-      with:
-        name: build-mac
-        path: dist/
+        merge-multiple: true
     - name: Dist Directory Tree
       run: ls dist/ -R
     - name: Publish package
