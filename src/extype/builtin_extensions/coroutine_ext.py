@@ -1,5 +1,5 @@
 from inspect import iscoroutine
-from typing import Awaitable, Callable, TypeVar
+from typing import Awaitable, Callable, Type, TypeVar, Union
 
 from ..extension_utils import extend_type_with, extension
 
@@ -21,7 +21,7 @@ class CoroutineExtension:
     """
 
     @extension
-    def then(self: Awaitable[_T], fn: Callable[[_T], Awaitable[_U] | _U]) -> Awaitable[_U]:
+    def then(self: Awaitable[_T], fn: Callable[[_T], Union[Awaitable[_U], _U]]) -> Awaitable[_U]:
         """
         Maps the result of the awaitable via an optionally async function.
 
@@ -44,10 +44,10 @@ class CoroutineExtension:
     @extension
     def catch(
         self: Awaitable[_T],
-        fn: Callable[[_E], Awaitable[_U] | _U],
+        fn: Callable[[_E], Union[Awaitable[_U], _U]],
         *,
-        exception: type[_E] = Exception
-    ) -> Awaitable[_T | _U]:
+        exception: Type[_E] = Exception
+    ) -> Awaitable[Union[_T, _U]]:
         """
         Catches an exception of the given type and calls the passed function with the caught exception.
 
