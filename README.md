@@ -128,7 +128,6 @@ so make sure you don't override an existing function, unless, of course, it is w
 
 We use [Hatch](https://hatch.pypa.io/latest/) to manage the build environment,
  and [mesonpy]( https://github.com/mesonbuild/meson-python) to build the package.
-> **Note:** Currently, we use unreleased mesonpy features, so we install it from git. 
 
 First, install Hatch: https://hatch.pypa.io/latest/install/. We recommend using [pipx](https://hatch.pypa.io/latest/install/#pipx).
 
