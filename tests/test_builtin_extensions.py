@@ -1,5 +1,5 @@
 import pytest
-from extype.builtin_extensions import extend_all
+from extype.builtin_extensions import extend_all  # noqa: F401
 
 
 # dict keys extension tests
@@ -322,3 +322,107 @@ def test_str_to_float():
 
 ###################################################
 
+
+# coroutine extensions tests
+
+
+@pytest.mark.asyncio
+async def test_coroutine_then_sync():
+    async def foo():
+        return 10
+
+    result = await foo().then(lambda x: x + 5)
+    assert result == 15
+
+
+@pytest.mark.asyncio
+async def test_coroutine_then_async():
+    async def foo():
+        return 10
+
+    async def add_five(x):
+        return x + 5
+
+    result = await foo().then(add_five)
+    assert result == 15
+
+
+@pytest.mark.asyncio
+async def test_coroutine_then_chaining():
+    async def foo():
+        return 10
+
+    async def add_five(x):
+        return x + 5
+
+    result = await foo().then(lambda x: x * 2).then(add_five).then(lambda x: x - 3)
+    assert result == 22  # (10 * 2) + 5 - 3 = 22
+
+
+@pytest.mark.asyncio
+async def test_coroutine_catch_no_exception():
+    async def foo():
+        return 42
+
+    result = await foo().catch(lambda e: 0)
+    assert result == 42
+
+
+@pytest.mark.asyncio
+async def test_coroutine_catch_with_exception():
+    async def foo():
+        raise ValueError("test error")
+
+    result = await foo().catch(lambda e: 100, exception=ValueError)
+    assert result == 100
+
+
+@pytest.mark.asyncio
+async def test_coroutine_catch_async_handler():
+    async def foo():
+        raise ValueError("test error")
+
+    async def handle_error(e):
+        return 200
+
+    result = await foo().catch(handle_error, exception=ValueError)
+    assert result == 200
+
+
+@pytest.mark.asyncio
+async def test_coroutine_catch_wrong_exception_type():
+    async def foo():
+        raise ValueError("test error")
+
+    with pytest.raises(ValueError):
+        await foo().catch(lambda e: 0, exception=TypeError)
+
+
+@pytest.mark.asyncio
+async def test_coroutine_catch_default_exception():
+    async def foo():
+        raise RuntimeError("test error")
+
+    result = await foo().catch(lambda e: 300)
+    assert result == 300
+
+
+@pytest.mark.asyncio
+async def test_coroutine_then_and_catch_combined():
+    async def foo():
+        return 10
+
+    result = await foo().then(lambda x: x * 2).catch(lambda e: 0)
+    assert result == 20
+
+
+@pytest.mark.asyncio
+async def test_coroutine_catch_and_then_combined():
+    async def foo():
+        raise ValueError("error")
+
+    result = await foo().catch(lambda e: 50, exception=ValueError).then(lambda x: x + 10)
+    assert result == 60
+
+
+###################################################

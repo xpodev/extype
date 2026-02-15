@@ -7,7 +7,8 @@ python_sources = [
     'int_ext.py',
     'list_ext.py',
     'seq_ext.py',
-    'str_ext.py'
+    'str_ext.py',
+    'coroutine_ext.py'
 ]
 
 
