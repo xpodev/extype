@@ -110,6 +110,12 @@ Only methods marked with `@extension` will be added as extension methods.
 Extending a type will extend it in all modules, not just the one that called the `extend_type_with`, 
 so make sure you don't override an existing function, unless, of course, it is what you want.
 
+### Free-threaded Python
+ExType supports the free-threaded build of Python (3.14t and later) and does not re-enable the GIL when imported.
+Extending a type is thread-safe, but other threads that are using the type at the same time may see either
+the old or the new behavior until `extend_type_with` returns. It is recommended to apply your extensions
+at import time, before starting other threads.
+
 
 ## Features
 - [x] Exteranlly extend type via another type
