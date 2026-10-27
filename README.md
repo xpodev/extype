@@ -173,6 +173,14 @@ hatch run +py=39 dist:test
 Both commands will build, install the package into an isolated environment,
  and run the tests in it.
 
+### Releasing
+
+The version is taken from the latest `vX.Y.Z` git tag (see `tools/version.py`), so there's no version to bump in the code.
+Builds between releases get a development version, such as `1.3.1.dev4+gabc1234`.
+
+To release, publish a GitHub release with a new `vX.Y.Z` tag. This builds the wheels for all platforms
+and Python versions and uploads them to PyPI. The upload is refused if the wheels' version doesn't match the tag.
+
 
 ### Built-in Extensions
 
