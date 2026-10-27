@@ -9,8 +9,15 @@ python_sources = [
    'extension_utils.py'
 ]
 
+version_file = configure_file(
+  input: '_version.py.in',
+  output: '_version.py',
+  configuration: {'VERSION': meson.project_version()},
+)
+
 python.install_sources(
   python_sources,
+  version_file,
   subdir: 'extype'
 )
 

@@ -1,3 +1,3 @@
 from .extension_utils import extension, extend_type_with
 
-__version__ = "1.3.0"
+from ._version import __version__  # noqa: F401
