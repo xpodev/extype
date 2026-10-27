@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
     
     steps:
     - uses: actions/checkout@v3
@@ -38,6 +38,7 @@ jobs:
       # if: github.event.inputs.build == 'true'
       # run: python -m build --wheel --sdist --outdir dist/
       env:
+        # Also builds the free-threaded (cp3XXt) wheels for versions that support them
         CIBW_PROJECT_REQUIRES_PYTHON: ==${{ matrix.python-version }}.*
       run: python -m cibuildwheel --output-dir dist/
     - name: Upload Artifact
@@ -49,10 +50,10 @@ jobs:
   windows:
     name: Build for Windows
 
-    runs-on: windows-2019
+    runs-on: windows-latest
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.14t"]
 
     steps:
     - uses: actions/checkout@v3
@@ -82,7 +83,7 @@ jobs:
     runs-on: macos-15-intel
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.14t"]
 
     steps:
     - uses: actions/checkout@v3

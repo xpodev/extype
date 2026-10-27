@@ -1,6 +1,6 @@
 from enum import IntFlag
 from typing import Generic, TypeVar
-from .core import enable_magic_method, get_type_dict
+from .core import enable_magic_method, set_type_attribute
 
 
 _T = TypeVar("_T")
@@ -24,8 +24,6 @@ def extend_type_with(typ, cls, recurse_parents=True):
     if not isinstance(typ, type):
         raise TypeError(f"argument 'typ' must be a valid type, got {type(typ)}")
 
-    type_dict = get_type_dict(typ)
-
     if recurse_parents:
         for base in cls.__bases__:
             extend_type_with(typ, base)
@@ -36,13 +34,15 @@ def extend_type_with(typ, cls, recurse_parents=True):
             item = item.original
             if callable(getattr(item, "__set_name__", None)):
                 item.__set_name__(typ, name)
+            # Set the attribute before enabling the slot, so the slot
+            # never runs without a method to call.
+            set_type_attribute(typ, name, item)
             if callable(item):
                 if name.startswith("__") and name.endswith("__"):
                     try:
                         enable_magic_method(typ, name)
                     except ValueError:
                         ...
-            type_dict[name] = item
 
 
 class ExtensionObject(Generic[_T]):
@@ -58,8 +58,6 @@ def extension(o: _T) -> _T:
     else:
         raise TypeError("Only functions and descriptors may be marked as extensions")
 
-
-del _T
 
 __all__ = [
     "extension",

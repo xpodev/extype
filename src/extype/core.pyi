@@ -6,6 +6,9 @@ if TYPE_CHECKING:
 def get_type_dict(typ: Type) -> Dict[str, Any]: ...
 
 
+def set_type_attribute(typ: Type, name: str, value: Any) -> None: ...
+
+
 def implement_protocol_on_type(typ: Type, protocols: "Protocol"): ...
 
 
