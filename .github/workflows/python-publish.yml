@@ -26,6 +26,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v3
+      with:
+        # The version is taken from the release tag, see tools/version.py
+        fetch-depth: 0
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
@@ -35,12 +38,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install build cibuildwheel
     - name: Build package
-      # if: github.event.inputs.build == 'true'
-      # run: python -m build --wheel --sdist --outdir dist/
       env:
         # Also builds the free-threaded (cp3XXt) wheels for versions that support them
         CIBW_PROJECT_REQUIRES_PYTHON: ==${{ matrix.python-version }}.*
-      run: python -m cibuildwheel --output-dir dist/
+      # The wheels are built from the sdist, which carries the version,
+      # since the build containers don't have the git history
+      run: |
+        python -m build --sdist --outdir sdist/
+        python -m cibuildwheel --output-dir dist/ sdist/*.tar.gz
     - name: Upload Artifact
       uses: actions/upload-artifact@v6
       with:
@@ -57,6 +62,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        # The version is taken from the release tag, see tools/version.py
+        fetch-depth: 0
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
@@ -87,6 +95,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        # The version is taken from the release tag, see tools/version.py
+        fetch-depth: 0
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
@@ -116,6 +127,15 @@ jobs:
         merge-multiple: true
     - name: Dist Directory Tree
       run: ls dist/ -R
+    - name: Check the wheels match the release version
+      run: |
+        version="${GITHUB_REF_NAME#v}"
+        for wheel in dist/*.whl; do
+          case "$(basename "$wheel")" in
+            "extype-$version-"*) ;;
+            *) echo "::error::$wheel doesn't match the version of $GITHUB_REF_NAME"; exit 1 ;;
+          esac
+        done
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@v1.8.3
       with:
